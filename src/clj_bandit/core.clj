@@ -48,8 +48,8 @@
   (update-in arms [arm] #(arm-value weighted-average-value reward %)))
 
 
-(defprotocol Bandit
-  (select-arm [bandit] "returns the label for the arm we pulled")
-  (update-reward [bandit arm reward] "update performance for the arm")
-  (arms [bandit] "Current results"))
+(defprotocol BanditAlgorithm
+  (select-arm [this] "returns the label for the arm we pulled")
+  (update-reward [this arm reward] "update performance for the arm")
+  (arms [this] "Current results"))
 

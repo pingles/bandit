@@ -1,11 +1,11 @@
 (ns clj-bandit.epsilon
-  (:use [clj-bandit.core :only (Bandit best-performing update-arms)]
+  (:use [clj-bandit.core :only (BanditAlgorithm best-performing update-arms)]
         [clj-bandit.storage :only (get-arms put-arms)]))
 
-(defn epsilon-bandit
+(defn epsilon-greedy-algorithm
   "Returns an Epsilon-Greedy bandit with the specified lever labels. uses atom storage"
   [epsilon storage]
-  (reify Bandit
+  (reify BanditAlgorithm
     (select-arm [_]
       (if (> (rand) epsilon)
         {:strategy :exploit
