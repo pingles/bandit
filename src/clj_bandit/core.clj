@@ -75,24 +75,23 @@
 
 
 
-
+(defprotocol BanditStorage
+  (get-levers [storage])
+  (put-levers [storage f]))
 
 (defprotocol Bandit
-  (pull-arm [bandit] "returns the label for the current pull")
-  (update-reward [bandit lever reward] "Tell the bandit to track its performance")
+  (select-arm [bandit] "returns the label for the arm we pulled")
+  (update-reward [bandit arm reward] "update performance for the arm")
   (levers [bandit] "Current results"))
 
-(defn epsilon-bandit
-  "Returns an Epsilon-Greedy bandit with the specified lever labels"
-  [epsilon labels]
+(defn atom-storage
+  [labels]
   (let [levers (atom (mk-levers labels))]
-    (reify Bandit
-      (pull-arm [_]
-        (if (> (rand) epsilon)
-          (best-performing @levers)
-          (apply hash-map (rand-nth (seq @levers)))))
-      (update-reward [_ lever reward]
-        (swap! levers #(update-levers reward lever %)))
-      (levers [_]
-        @levers))))
+    (reify BanditStorage
+      (get-levers [_]
+        @levers)
+      (put-levers [_ f]
+        (swap! levers f)))))
+
+
 
