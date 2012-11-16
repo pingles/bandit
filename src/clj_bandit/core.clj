@@ -1,5 +1,14 @@
 (ns clj-bandit.core)
 
+(defn mk-levers
+  "Creates the structure suitable for storing lever results"
+  [labels]
+  (apply merge (map (fn [label]
+                      {label {:n 0
+                              :reward 0
+                              :value 0}})
+                    labels)))
+
 (defn- individual-maps
   "breaks m into a vector of maps. useful to break apart an overall map of levers"
   [m]
@@ -12,17 +21,6 @@
                (:value (first (vals m))))]
     (apply max-key perf (individual-maps m))))
 
-
-
-(defn pull-arm
-  "Picks a lever at random, with P(epsilon) of exploring and P(1-epsilon) of exploiting the currently best performing arm."
-  [epsilon levers]
-  (let [p (rand)]
-    (if (> p epsilon)
-      {:strategy :exploit
-       :arm (best-performing levers)}
-      {:strategy :explore
-       :arm (apply hash-map (rand-nth (seq levers)))})))
 
 
 (defn weighted-average-value
@@ -77,18 +75,24 @@
 
 
 
-;; now have the building blocks for our algorithm:
-;; 1) initialise the levers map
-;; 2) pull-arm
-;; 3) update results
-(comment
-  (def levers {:lever1 {:n 1
-                        :reward 0
-                        :value 0}
-               :lever2 {:n 1
-                        :reward 0
-                        :value 0}})
-  (def pull (pull-arm 0.2 levers))
-  ;; now need to update based on the reward. update-levers returns the
-  ;; new value for levers.
-  (update-levers 1 :lever1 levers))
+
+
+(defprotocol Bandit
+  (pull-arm [bandit] "returns the label for the current pull")
+  (update-reward [bandit lever reward] "Tell the bandit to track its performance")
+  (levers [bandit] "Current results"))
+
+(defn epsilon-bandit
+  "Returns an Epsilon-Greedy bandit with the specified lever labels"
+  [epsilon labels]
+  (let [levers (atom (mk-levers labels))]
+    (reify Bandit
+      (pull-arm [_]
+        (if (> (rand) epsilon)
+          (best-performing @levers)
+          (apply hash-map (rand-nth (seq @levers)))))
+      (update-reward [_ lever reward]
+        (swap! levers #(update-levers reward lever %)))
+      (levers [_]
+        @levers))))
+
