@@ -27,7 +27,7 @@
   "calculates the reward value for the arm. uses a weighted average."
   ([reward]
      reward)
-  ([reward {:keys [n value] :as arms}]
+  ([reward {:keys [n value] :as arm}]
      (+ (* (/ (- n 1)
               n)
            value)
@@ -35,36 +35,21 @@
            reward))))
 
 (defn arm-value
-  "updates lever map given latest reward.
-   (arm-value 1 {:n 2 :reward 0 :value 0}) => {:value 1/2 :n 3 :reward 1}"
-  ([latest-reward arm]
-     (arm-value weighted-average-value latest-reward arm))
-  ([value-fn latest-reward {:keys [n reward] :as arm}]
-     (let [updated {:n (inc n)
-                    :reward (+ latest-reward reward)}]
-       (if (= n 0)
-         (assoc updated :value (value-fn latest-reward))
-         (assoc updated :value (value-fn latest-reward arm))))))
+  "updates arm map given latest reward." 
+  [value-fn latest-reward {:keys [n reward] :as arm}]
+  (let [updated {:n (inc n)
+                 :reward (+ latest-reward reward)}]
+    (if (= n 0)
+      (assoc updated :value (value-fn latest-reward))
+      (assoc updated :value (value-fn latest-reward arm)))))
 
 (defn update-arms
   [reward arm arms]
-  (update-in arms [arm] #(arm-value reward %)))
+  (update-in arms [arm] #(arm-value weighted-average-value reward %)))
 
-
-(defprotocol BanditStorage
-  (get-arms [storage])
-  (put-arms [storage f]))
 
 (defprotocol Bandit
   (select-arm [bandit] "returns the label for the arm we pulled")
   (update-reward [bandit arm reward] "update performance for the arm")
   (arms [bandit] "Current results"))
 
-(defn atom-storage
-  [labels]
-  (let [arms (atom (mk-arms labels))]
-    (reify BanditStorage
-      (get-arms [_]
-        @arms)
-      (put-arms [_ f]
-        (swap! arms f)))))
