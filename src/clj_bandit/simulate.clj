@@ -18,6 +18,6 @@
 ;; take 5 results from a sequence of results for a bernoulli arm
 ;; (take 5 (repeatedly #(draw-arm (bernoulli-arm 0.1))))
 
-(defn lever-name
+(defn arm-name
   [pull]
   (first (keys (:arm pull))))

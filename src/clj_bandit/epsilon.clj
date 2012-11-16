@@ -1,5 +1,5 @@
 (ns clj-bandit.epsilon
-  (:use [clj-bandit.core :only (Bandit atom-storage get-levers put-levers best-performing update-levers)]))
+  (:use [clj-bandit.core :only (Bandit atom-storage get-arms put-arms best-performing update-arms)]))
 
 (defn epsilon-bandit
   "Returns an Epsilon-Greedy bandit with the specified lever labels. uses atom storage"
@@ -9,12 +9,12 @@
       (select-arm [_]
         (if (> (rand) epsilon)
           {:strategy :exploit
-           :arm (best-performing (get-levers storage))}
+           :arm (best-performing (get-arms storage))}
           {:strategy :explore
-           :arm (let [levers (get-levers storage)
-                      label (rand-nth (keys levers))]
-                  {label (get levers label)})}))
+           :arm (let [arms (get-arms storage)
+                      label (rand-nth (keys arms))]
+                  {label (get arms label)})}))
       (update-reward [_ arm reward]
-        (put-levers storage #(update-levers reward arm %)))
-      (levers [_]
-        (get-levers storage)))))
+        (put-arms storage #(update-arms reward arm %)))
+      (arms [_]
+        (get-arms storage)))))

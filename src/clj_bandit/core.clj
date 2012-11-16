@@ -1,7 +1,7 @@
 (ns clj-bandit.core)
 
-(defn mk-levers
-  "Creates the structure suitable for storing lever results"
+(defn mk-arms
+  "Creates the structure suitable for storing arm results"
   [labels]
   (apply merge (map (fn [label]
                       {label {:n 0
@@ -10,12 +10,12 @@
                     labels)))
 
 (defn- individual-maps
-  "breaks m into a vector of maps. useful to break apart an overall map of levers"
+  "breaks m into a vector of maps. useful to break apart arms map"
   [m]
   (map #(apply hash-map %) (seq m)))
 
 (defn best-performing
-  "Given a map of levers + results, pick the one with the current highest reward"
+  "Given a map of arms + results, pick the one with the current highest reward"
   [m]
   (let [perf (fn [m]
                (:value (first (vals m))))]
@@ -27,7 +27,7 @@
   "calculates the reward value for the arm. uses a weighted average."
   ([reward]
      reward)
-  ([reward {:keys [n value] :as levers}]
+  ([reward {:keys [n value] :as arms}]
      (+ (* (/ (- n 1)
               n)
            value)
@@ -35,36 +35,36 @@
            reward))))
 
 (defn arm-value
-  "returns updated arm results map given the most recently observed reward.
+  "updates lever map given latest reward.
    (arm-value 1 {:n 2 :reward 0 :value 0}) => {:value 1/2 :n 3 :reward 1}"
-  ([latest-reward results]
-     (arm-value weighted-average-value latest-reward results))
-  ([value-fn latest-reward {:keys [n reward] :as results}]
+  ([latest-reward arm]
+     (arm-value weighted-average-value latest-reward arm))
+  ([value-fn latest-reward {:keys [n reward] :as arm}]
      (let [updated {:n (inc n)
                     :reward (+ latest-reward reward)}]
        (if (= n 0)
          (assoc updated :value (value-fn latest-reward))
-         (assoc updated :value (value-fn latest-reward results))))))
+         (assoc updated :value (value-fn latest-reward arm))))))
 
-(defn update-levers
-  [reward lever levers]
-  (update-in levers [lever] #(arm-value reward %)))
+(defn update-arms
+  [reward arm arms]
+  (update-in arms [arm] #(arm-value reward %)))
 
 
 (defprotocol BanditStorage
-  (get-levers [storage])
-  (put-levers [storage f]))
+  (get-arms [storage])
+  (put-arms [storage f]))
 
 (defprotocol Bandit
   (select-arm [bandit] "returns the label for the arm we pulled")
   (update-reward [bandit arm reward] "update performance for the arm")
-  (levers [bandit] "Current results"))
+  (arms [bandit] "Current results"))
 
 (defn atom-storage
   [labels]
-  (let [levers (atom (mk-levers labels))]
+  (let [arms (atom (mk-arms labels))]
     (reify BanditStorage
-      (get-levers [_]
-        @levers)
-      (put-levers [_ f]
-        (swap! levers f)))))
+      (get-arms [_]
+        @arms)
+      (put-arms [_ f]
+        (swap! arms f)))))
