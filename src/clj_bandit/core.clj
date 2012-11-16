@@ -24,10 +24,10 @@
 
 
 (defn weighted-average-value
-  "calculates the reward value for the arm. uses a weighted average"
+  "calculates the reward value for the arm. uses a weighted average."
   ([reward]
      reward)
-  ([reward {:keys [n value] :as m}]
+  ([reward {:keys [n value] :as levers}]
      (+ (* (/ (- n 1)
               n)
            value)
@@ -46,33 +46,9 @@
          (assoc updated :value (value-fn latest-reward))
          (assoc updated :value (value-fn latest-reward results))))))
 
-
-(defn bernoulli-arm
-  "returns a function mimicking a bandit arm with a set probability. each function call represents the pulling of a bandit arm. can be used to simulate results. 0 < p < 1. p indicates probability of being rewarded (with 1).
-
-   e.g (def draw-arm (bernoulli-arm 0.1)) ; 10% payout
-   (repeatedly 10 draw-arm)"
-  [p]
-  (fn []
-    (if (> (rand) p)
-      0
-      1)))
-
-(defn draw-arm
-  [f]
-  (f))
-
-;; take 5 results from a sequence of results for a bernoulli arm
-;; (take 5 (repeatedly #(draw-arm (bernoulli-arm 0.1))))
-
-(defn lever-name
-  [pull]
-  (first (keys (:arm pull))))
-
 (defn update-levers
   [reward lever levers]
-  (update-in levers [lever] #(arm-value 1 %)))
-
+  (update-in levers [lever] #(arm-value reward %)))
 
 
 (defprotocol BanditStorage
@@ -92,6 +68,3 @@
         @levers)
       (put-levers [_ f]
         (swap! levers f)))))
-
-
-

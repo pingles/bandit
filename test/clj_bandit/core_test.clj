@@ -22,4 +22,6 @@
 
 (deftest updating-lever-results
   (is (= {:lever1 {:n 4 :reward 2 :value 2/3}}
-         (update-levers 1 :lever1 {:lever1 {:n 3 :reward 1 :value 1/2}}))))
+         (update-levers 1 :lever1 {:lever1 {:n 3 :reward 1 :value 1/2}})))
+  (is (= {:lever1 {:n 4 :reward 1 :value 1/3}}
+         (update-levers 0 :lever1 {:lever1 {:n 3 :reward 1 :value 1/2}}))))
