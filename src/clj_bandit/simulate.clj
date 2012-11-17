@@ -16,10 +16,6 @@
   [pull]
   (first (keys (:arm pull))))
 
-(comment
-  (let [simulation-seq (repeatedly #(map draw-arm arms))]
-    (take 10 simulation-seq)))
-
 (defn cumulative-sum
   [coll]
   (reduce 
@@ -43,8 +39,6 @@
       (map conj rows cumulative-rewards))))
 
 (defn run-simulation
-  "simulations: fixed number of sims to run to cancel out noise within individual tests.
-   horizon: number of times algorithm can pull on arms during each simulation. measure how well the algorithm does with 1 try, 100 tries etc."
   ([]
      (run-simulation 1000 200))
   ([simulations iterations]

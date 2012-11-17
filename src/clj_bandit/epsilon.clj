@@ -1,6 +1,30 @@
 (ns clj-bandit.epsilon
-  (:use [clj-bandit.core :only (BanditAlgorithm best-performing update-arms)]
+  (:use [clj-bandit.core :only (BanditAlgorithm best-performing)]
         [clj-bandit.storage :only (get-arms put-arms)]))
+
+(defn weighted-average-value
+  "calculates the reward value for the arm. uses a weighted average."
+  ([reward]
+     reward)
+  ([reward {:keys [n value] :as arm}]
+     (+ (* (/ (- n 1)
+              n)
+           value)
+        (* (/ 1 n)
+           reward))))
+
+(defn arm-value
+  "updates arm map given latest reward." 
+  [value-fn latest-reward {:keys [n reward] :as arm}]
+  (let [updated {:n (inc n)
+                 :reward (+ latest-reward reward)}]
+    (if (= n 0)
+      (assoc updated :value (value-fn latest-reward))
+      (assoc updated :value (value-fn latest-reward arm)))))
+
+(defn update-arms
+  [reward arm arms]
+  (update-in arms [arm] #(arm-value weighted-average-value reward %)))
 
 (defn epsilon-greedy-algorithm
   "Returns an Epsilon-Greedy bandit with the specified lever labels. uses atom storage"
