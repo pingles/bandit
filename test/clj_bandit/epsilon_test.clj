@@ -22,7 +22,7 @@
          (weighted-average-value 1 {:n 3 :reward 1 :value 1/2}))))
 
 (deftest epsilon-greedy-bandit
-  (let [algo (epsilon-greedy-algorithm 0.2 (atom-storage #{:lever1 :lever2}))]
+  (let [algo (epsilon-greedy-algorithm 0.2 (atom-storage (mk-arms #{:lever1 :lever2})))]
     (is (= {:lever1 {:reward 0 :n 0 :value 0}
             :lever2 {:reward 0 :n 0 :value 0}}
            (arms algo)))

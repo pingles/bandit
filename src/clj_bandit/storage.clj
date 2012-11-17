@@ -1,13 +1,12 @@
-(ns clj-bandit.storage
-  (:use [clj-bandit.core :only (mk-arms)]))
+(ns clj-bandit.storage)
 
 (defprotocol BanditStorage
   (get-arms [storage])
   (put-arms [storage f]))
 
 (defn atom-storage
-  [labels]
-  (let [arms (atom (mk-arms labels))]
+  [state]
+  (let [arms (atom state)]
     (reify BanditStorage
       (get-arms [_]
         @arms)
