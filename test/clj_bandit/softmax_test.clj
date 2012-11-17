@@ -1,4 +1,4 @@
-(ns clj-bandit.test.softmax
+(ns clj-bandit.softmax_test
   (use [clojure.test]
        [clj-bandit.core :only (select-arm)]
        [clj-bandit.storage :only (atom-storage)]
