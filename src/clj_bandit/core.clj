@@ -7,10 +7,10 @@
 
 (defn best-performing
   "Given a map of arms + results, pick the one with the current highest reward"
-  [m]
+  [arms]
   (let [perf (fn [m]
                (:value (first (vals m))))]
-    (apply max-key perf (individual-maps m))))
+    (apply max-key perf (individual-maps arms))))
 
 (defprotocol BanditAlgorithm
   (select-arm [this] "returns the label for the arm we pulled")
