@@ -36,10 +36,8 @@
   (reify BanditAlgorithm
     (select-arm [_]
       (if (> (rand) epsilon)
-        {:strategy :exploit
-         :arm (best-performing (get-arms storage))}
-        {:strategy :explore
-         :arm (apply hash-map (rand-nth (seq (get-arms storage))))}))
+        (best-performing (get-arms storage))
+        (apply hash-map (rand-nth (seq (get-arms storage))))))
     (update-reward [_ arm reward]
       (put-arms storage #(update-arms reward arm %)))
     (arms [_]
