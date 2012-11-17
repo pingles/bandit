@@ -11,9 +11,7 @@
         {:strategy :exploit
          :arm (best-performing (get-arms storage))}
         {:strategy :explore
-         :arm (let [arms (get-arms storage)
-                    label (rand-nth (keys arms))]
-                {label (get arms label)})}))
+         :arm (apply hash-map (rand-nth (seq (get-arms storage))))}))
     (update-reward [_ arm reward]
       (put-arms storage #(update-arms reward arm %)))
     (arms [_]
