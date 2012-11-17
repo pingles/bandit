@@ -42,7 +42,7 @@
   [epsilon iterations simulation-number]
   (let [arm-labels [:arm1 :arm2 :arm3 :arm4 :arm5]
         arms (map bernoulli-arm [0.1 0.1 0.1 0.1 0.9])
-        algo (epsilon-greedy-algorithm 0.1 (atom-storage arm-labels))]
+        algo (epsilon-greedy-algorithm epsilon (atom-storage arm-labels))]
     (let [rows (map (fn [t]
                       (let [chosen-arm (arm-name (select-arm algo))
                             reward (draw-arm (nth arms (.indexOf arm-labels chosen-arm)))
@@ -57,7 +57,7 @@
   "simulations: fixed number of sims to run to cancel out noise within individual tests.
    horizon: number of times algorithm can pull on arms during each simulation. measure how well the algorithm does with 1 try, 100 tries etc."
   ([]
-     (run-simulation 500 200))
+     (run-simulation 750 200))
   ([simulations iterations]
      (with-open [csv (writer "tmp/results.csv")]
        (let [epsilon-values [0.1 0.2 0.3 0.4 0.5]]
