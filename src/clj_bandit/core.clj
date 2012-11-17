@@ -1,6 +1,6 @@
 (ns clj-bandit.core)
 
-(defn- individual-maps
+(defn individual-maps
   "breaks m into a vector of maps. useful to break apart arms map"
   [m]
   (map #(apply hash-map %) (seq m)))
