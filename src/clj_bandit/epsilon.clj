@@ -5,11 +5,8 @@
 (defn mk-arms
   "Creates the structure suitable for storing arm results for epsilon greedy algo."
   [labels]
-  (apply merge (map (fn [label]
-                      {label {:n 0
-                              :reward 0
-                              :value 0}})
-                    labels)))
+  (letfn [(arm-map [label] {label {:n 0 :reward 0 :value 0}})]
+    (apply merge (map arm-map labels))))
 
 (defn weighted-average-value
   "calculates the reward value for the arm. uses a weighted average."
