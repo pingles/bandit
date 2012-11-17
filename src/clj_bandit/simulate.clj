@@ -3,7 +3,7 @@
         [clojure.java.io :only (writer)]
         [clj-bandit.epsilon]
         [clj-bandit.storage :only (atom-storage)]
-        [clj-bandit.core :only (select-arm update-reward)]))
+        [clj-bandit.core :only (select-arm update-reward cumulative-sum)]))
 
 (defn bernoulli-arm [p] (fn [] (if (> (rand) p) 0 1)))
 
@@ -15,13 +15,6 @@
 (defn arm-name
   [pull]
   (first (keys (:arm pull))))
-
-(defn cumulative-sum
-  [coll]
-  (reduce 
-   (fn [v, x] (conj v (+ (last v) x))) 
-   [(first coll)] 
-   (rest coll)))
 
 (defn simulation-results
   [epsilon iterations simulation-number]
