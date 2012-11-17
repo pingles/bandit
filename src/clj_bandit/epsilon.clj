@@ -15,8 +15,7 @@
   "calculates the reward value for the arm. uses a weighted average."
   ([reward] reward)
   ([reward {:keys [n value] :as arm}]
-     (+ (* (/ (- n 1)
-              n)
+     (+ (* (/ (dec n) n)
            value)
         (* (/ 1 n)
            reward))))
@@ -26,7 +25,7 @@
   [value-fn latest-reward {:keys [n reward] :as arm}]
   (let [updated {:n (inc n)
                  :reward (+ latest-reward reward)}]
-    (if (= n 0)
+    (if (zero? n)
       (assoc updated :value (value-fn latest-reward))
       (assoc updated :value (value-fn latest-reward arm)))))
 
