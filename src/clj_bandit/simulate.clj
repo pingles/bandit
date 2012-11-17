@@ -20,7 +20,7 @@
   [epsilon iterations simulation-number]
   (let [arm-labels [:arm1 :arm2 :arm3 :arm4 :arm5]
         arms (map bernoulli-arm [0.1 0.1 0.1 0.1 0.9])
-        algo (epsilon-greedy-algorithm epsilon (atom-storage arm-labels))]
+        algo (epsilon-greedy-algorithm epsilon (atom-storage (mk-arms arm-labels)))]
     (let [rows (map (fn [t]
                       (let [chosen-arm (arm-name (select-arm algo))
                             reward (draw-arm (nth arms (.indexOf arm-labels chosen-arm)))
