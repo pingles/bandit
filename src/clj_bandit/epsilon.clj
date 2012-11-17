@@ -13,8 +13,7 @@
 
 (defn weighted-average-value
   "calculates the reward value for the arm. uses a weighted average."
-  ([reward]
-     reward)
+  ([reward] reward)
   ([reward {:keys [n value] :as arm}]
      (+ (* (/ (- n 1)
               n)
