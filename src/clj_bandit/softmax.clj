@@ -11,12 +11,12 @@
 
 (defn z
   [temperature values]
-  (reduce + (map (fn [x] (expt (/ x temperature) 2))
+  (reduce + (map (fn [x] (Math/exp (/ x temperature)))
                  values)))
 
 (defn p
   [temperature z value]
-  (/ (expt (/ value temperature) 2)
+  (/ (Math/exp (/ value temperature))
      z))
 
 (defn probabilities
