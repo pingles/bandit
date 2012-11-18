@@ -1,6 +1,7 @@
 (ns clj-bandit.softmax
   (:use [clj-bandit.core :only (cumulative-sum BanditAlgorithm)]
-        [clj-bandit.storage :only (get-arms put-arms)]))
+        [clj-bandit.storage :only (get-arms put-arms)]
+        [clojure.math.numeric-tower :only (sqrt expt)]))
 
 (defn mk-arms
   "Creates the structure suitable for storing arm results for epsilon greedy algo."
@@ -10,14 +11,18 @@
 
 (defn z
   [temperature values]
-  (reduce + (map (fn [x] (Math/exp (/ x temperature))) values)))
+  (reduce + (map (fn [x] (expt (/ x temperature) 2))
+                 values)))
+
+(defn p
+  [temperature z value]
+  (/ (expt (/ value temperature) 2)
+     z))
 
 (defn probabilities
   [temperature values]
   (let [z-value (z temperature values)]
-    (map (fn [x] (/ (Math/exp (/ x temperature))
-                   z-value))
-         values)))
+    (map (partial p temperature z-value) values)))
 
 (defn probability-maps
   [temperature values]
@@ -26,19 +31,46 @@
     (map (fn [[p cum-p]] {:p p :cum-p cum-p})
          (partition 2 (interleave probs cum-probs)))))
 
-(defn categorical-draw
+(defn select-cumulative-probability
+  [val arms]
+  (if-let [found (first (filter (fn [[_ {:keys [cum-p]}]]
+                                  (> cum-p val)) arms))]
+    (apply hash-map found)))
+
+(defn select-draw
+  "Given arms with cum-p values, pick the one we'll use"
+  [rand-val arms]
+  (or (select-cumulative-probability rand-val arms)
+      (apply hash-map (last arms))))
+
+(defn draw-probabilities
   [temperature arms]
   (let [arm-vec (vec arms)
-        p-maps (probability-maps temperature (map #(:value (last %)) arm-vec))
-        arm-labels (map first arm-vec)
-        arm-vals (map last arm-vec)
-        merged-arm-vals (map #(apply merge %)
-                             (partition 2 (interleave arm-vals p-maps)))
-        z (rand)]
-    (apply hash-map (or (first (filter (fn [[_ {:keys [cum-p]}]] (> cum-p z))
-                                       (partition 2
-                                                  (interleave arm-labels merged-arm-vals))))
-                        (first arms)))))
+        values (map #(:value (last %)) arm-vec)]
+    (let [p-maps (probability-maps temperature values)
+          arm-labels (map first arm-vec)
+          arm-vals (map last arm-vec)
+          merged-arm-vals (map #(apply merge %)
+                               (partition 2 (interleave arm-vals p-maps)))]
+      (apply merge (map #(apply hash-map %)
+                        (partition 2 (interleave arm-labels merged-arm-vals)))))))
+
+(defn make-draw
+  ([temperature arms]
+     (make-draw temperature (rand) arms))
+  ([temperature rand-val arms]
+     (if (not-every? zero? (map :value (vals arms))) 
+       (select-draw rand-val (draw-probabilities temperature arms))
+       (apply hash-map (last arms)))))
+
+;; TODO
+;; this is the weighted calc as in epsilon
+(defn calc-value
+  [n value reward]
+  (+ (* (/ (dec n) n)
+        value)
+     (* (/ 1 n)
+        reward)))
 
 ;; TODO
 ;; this is almost the exact same as in epsilon, extract
@@ -48,11 +80,7 @@
                  :reward (+ reward latest-reward)}]
     (if (zero? n)
       (assoc updated :value latest-reward)
-      (assoc updated :value (+ (* (/ (dec n)
-                                     n)
-                                  value)
-                               (* (/ 1 n)
-                                  reward))))))
+      (assoc updated :value (calc-value n value latest-reward)))))
 
 (defn update-arms
   [reward arm arms]
@@ -63,7 +91,7 @@
   [temperature storage]
   (reify BanditAlgorithm
     (select-arm [_]
-      (categorical-draw temperature (get-arms storage)))
+      (make-draw temperature (get-arms storage)))
     (update-reward [_ arm reward]
       (put-arms storage #(update-arms reward arm %)))
     (arms [_]
