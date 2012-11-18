@@ -54,14 +54,14 @@
      (with-open [csv (writer "tmp/results.csv")]
        (let [epsilon-algos (map mk-epsilon-algorithm [0.1 0.2 0.3 0.4 0.5])
              softmax-algos (map mk-softmax-algorithm [0.1 0.2 0.3 0.4 0.5])
-             algorithms (concat epsilon-algos softmax-algos)]
+             algorithms softmax-algos]
          (write-csv csv (apply concat
-                               (map (fn [algorithm]
-                                      (apply concat
-                                             (map (fn [sim-num]
-                                                    (apply concat
-                                                           (map (fn [iterations]
-                                                                  (simulation-results algorithm sim-num iterations))
-                                                                (range 1 (inc iterations)))))
-                                                  (range 1 (inc simulations)))))
-                                    algorithms)))))))
+                               (pmap (fn [algorithm]
+                                       (apply concat
+                                              (map (fn [sim-num]
+                                                     (apply concat
+                                                            (map (fn [iterations]
+                                                                   (simulation-results algorithm sim-num iterations))
+                                                                 (range 1 (inc iterations)))))
+                                                   (range 1 (inc simulations)))))
+                                     algorithms)))))))
