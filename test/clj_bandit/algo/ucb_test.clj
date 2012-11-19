@@ -5,10 +5,14 @@
         [clj-bandit.algo.ucb] :reload))
 
 (deftest picks-unpulled-arms
+  (is (= '({:arm2 {:n 0}} {:arm1 {:n 0}})
+         (unused-arms {:arm1 {:n 0}
+                       :arm2 {:n 0}
+                       :arm3 {:n 1}})))
   (is (= {:arm1 {:n 0}}
-         (unused-arm {:arm1 {:n 0}
-                      :arm2 {:n 1}})))
-  (is (nil? (unused-arm {:arm1 {:n 1}}))))
+         (first-unused-arm {:arm1 {:n 0}
+                            :arm2 {:n 1}})))
+  (is (nil? (first-unused-arm {:arm1 {:n 1}}))))
 
 (deftest number-pulls-across-arms
   (is (= 1

@@ -8,12 +8,11 @@
   (letfn [(arm-map [label] {label {:n 0 :reward 0 :value 0}})]
     (apply merge (map arm-map labels))))
 
-(defn unused-arm
-  "picks an unused arm. returns nil if there aren't any"
+(defn unused-arms
   [arms]
-  (if-let [arm (first (filter (fn [[_ {:keys [n]}]] (zero? n))
-                              arms))]
-    (apply hash-map arm)))
+  (map (partial apply hash-map) (filter (fn [[_ {:keys [n]}]] (zero? n)) arms)))
+
+(def first-unused-arm (comp first unused-arms))
 
 (defn total-pulls
   [arms]
@@ -44,7 +43,7 @@
 
 (defn pick-arm
   [arms]
-  (or (unused-arm arms)
+  (or (first-unused-arm arms)
       (best-performing :ucb-value (ucb-value arms))))
 
 (defn ucb-algorithm
