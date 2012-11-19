@@ -11,7 +11,7 @@
   (map #(apply hash-map %) (seq m)))
 
 (defn best-performing
-  "Given a map of arms + results, pick the one with the current highest k. assumes each map contains a value for k."
+  "Given a map of arms + results, pick the one with the current highest (k val). assumes each map contains a value for k."
   [k arms]
   (letfn [(performance [arm]
             (k (->> arm vals first)))]
