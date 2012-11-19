@@ -1,6 +1,8 @@
 # clj-bandit
 
-A Clojure library implementing the algorithms described in ["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) by John Myles White.
+A simple Clojure library for multi-armed bandit optimisation.
+
+Algorithms are implemented following ["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) by John Myles White.
 
 This library aims to be simple- concerning itself with multi-armed bandit optimisation only. Integrating with web applications etc. is the responsibility of other libraries. Through keeping it small and simple we hope to make it far easier to integrate than existing tools.
 
