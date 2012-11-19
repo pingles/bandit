@@ -16,8 +16,7 @@
 
 (defn total-pulls
   [arms]
-  (reduce + (map (fn [[_ {:keys [n]}]] n)
-                 arms)))
+  (reduce + (map (fn [[_ {:keys [n]}]] n) arms)))
 
 (defn bonus-value
   [total-pulls arm-pulls]
