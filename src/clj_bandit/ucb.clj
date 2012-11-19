@@ -33,8 +33,8 @@
     {k (assoc v :ucb-value (+ (:value v)
                               (bonus-value total-pulls (:n v))))}))
 
-(defn bonus
-  "adds bonus value to each arm"
+(defn ucb-value
+  "adds ucb-value to each arm"
   [arms]
   (apply conj (map (partial arm-ucb-value (total-pulls arms)) (individual-maps arms))))
 
@@ -70,12 +70,16 @@
   [reward arm arms]
   (update-in arms [arm] #(arm-value reward %)))
 
+(defn pick-arm
+  [arms]
+  (or (unused-arm arms)
+      (best-performing (ucb-value arms))))
+
 (defn ucb-algorithm
   [storage]
   (reify BanditAlgorithm
     (select-arm [_]
-      (or (unused-arm (get-arms storage))
-          (best-performing (get-arms storage))))
+      (pick-arm (get-arms storage)))
     (update-reward [_ arm reward]
       (put-arms storage #(update-arms reward arm %)))
     (arms [_]

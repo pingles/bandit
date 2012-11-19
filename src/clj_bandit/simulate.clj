@@ -4,6 +4,7 @@
         [clj-bandit.epsilon]
         [clj-bandit.softmax :only (softmax-algorithm)]
         [clj-bandit.storage :only (atom-storage)]
+        [clj-bandit.ucb :only [ucb-algorithm]]
         [clj-bandit.core :only (select-arm update-reward cumulative-sum)]))
 
 (defn bernoulli-arm [p] (fn [] (if (> (rand) p) 0 1)))
@@ -55,7 +56,8 @@
      (with-open [csv (writer "tmp/results.csv")]
        (let [epsilon-algos (map mk-epsilon-algorithm [0.1 0.2 0.3 0.4 0.5])
              softmax-algos (map mk-softmax-algorithm [0.1 0.2 0.3 0.4 0.5])
-             algorithms (concat epsilon-algos softmax-algos)]
+             ucb-algo {:algo-name "ucb" :variant "N/A" :algo-fn (fn [] (ucb-algorithm (mk-storage)))}
+             algorithms (concat [ucb-algo])]
          (write-csv csv (apply concat (map (fn [algorithm]
                                              (apply concat (pmap (partial simulation-results algorithm (inc iterations))
                                                                  (range 1 (inc simulations)))))
