@@ -8,7 +8,7 @@ This library aims to be simple- concerning itself with multi-armed bandit optimi
 
 ## Performance
 
-The ["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using `clj-bandit.simulate/run-simulation`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
+["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using `clj-bandit.simulate/run-simulation`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
 
 In the plots below, `algo.variant` refers to a parameter that can be passed to the algorithm to tune it's desire for experimentation vs exploitation:
 
