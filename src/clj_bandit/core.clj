@@ -6,10 +6,10 @@
   (map #(apply hash-map %) (seq m)))
 
 (defn best-performing
-  "Given a map of arms + results, pick the one with the current highest reward"
-  [arms]
+  "Given a map of arms + results, pick the one with the current highest k. assumes each map contains a value for k."
+  [k arms]
   (letfn [(performance [arm]
-            (:value (->> arm vals first)))]
+            (k (->> arm vals first)))]
     (apply max-key performance (individual-maps arms))))
 
 (defn cumulative-sum

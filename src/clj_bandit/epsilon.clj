@@ -18,7 +18,7 @@
   (reify BanditAlgorithm
     (select-arm [_]
       (if (> (rand) epsilon)
-        (best-performing (get-arms storage))
+        (best-performing :value (get-arms storage))
         (apply hash-map (rand-nth (seq (get-arms storage))))))
     (update-reward [_ arm reward]
       (put-arms storage #(update-arms reward arm %)))

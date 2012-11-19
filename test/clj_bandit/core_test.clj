@@ -8,10 +8,10 @@
 
 (deftest best-performing-arm
   (is (= {:lever1 {:value 1}}
-         (best-performing {:lever1 {:value 1}}))
+         (best-performing :value {:lever1 {:value 1}}))
       (= {:lever1 {:value 1}}
-         (best-performing {:lever1 {:value 1}
-                           :lever2 {:value 0}}))))
+         (best-performing :value {:lever1 {:value 1}
+                                  :lever2 {:value 0}}))))
 
 (deftest calculating-arm-value
   (is (= 1

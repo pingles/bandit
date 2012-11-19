@@ -1,5 +1,5 @@
 (ns clj-bandit.ucb
-  (:use [clj-bandit.core :only (BanditAlgorithm individual-maps weighted-arm-value)]
+  (:use [clj-bandit.core :only (BanditAlgorithm individual-maps weighted-arm-value best-performing)]
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt)]))
 
@@ -39,15 +39,6 @@
   [arms]
   (apply conj (map (partial arm-ucb-value (total-pulls arms)) (individual-maps arms))))
 
-;; TODO
-;; this can be removed if the value is stored in 'value', the same fn
-;; already exists in core
-(defn best-performing
-  [arms]
-  (letfn [(performance [arm]
-            (:ucb-value (->> arm vals first)))]
-    (apply max-key performance (individual-maps arms))))
-
 (defn update-arms
   [reward arm arms]
   (update-in arms [arm] (partial weighted-arm-value reward)))
@@ -55,7 +46,7 @@
 (defn pick-arm
   [arms]
   (or (unused-arm arms)
-      (best-performing (ucb-value arms))))
+      (best-performing :ucb-value (ucb-value arms))))
 
 (defn ucb-algorithm
   [storage]

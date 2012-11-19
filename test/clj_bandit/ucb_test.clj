@@ -1,7 +1,7 @@
 (ns clj-bandit.ucb_test
   (:use [clojure.test]
         [clj-bandit.storage :only (atom-storage)]
-        [clj-bandit.core :only (select-arm update-reward arms)]
+        [clj-bandit.core :only (select-arm update-reward arms best-performing)]
         [clj-bandit.ucb] :reload))
 
 (deftest picks-unpulled-arms
@@ -28,8 +28,8 @@
 
 (deftest arm-selection
   (is (= {:arm1 {:ucb-value 9}}
-         (best-performing {:arm1 {:ucb-value 9}
-                           :arm2 {:ucb-value 1}})))  
+         (best-performing :ucb-value {:arm1 {:ucb-value 9}
+                                      :arm2 {:ucb-value 1}})))
   (is (= {:arm2 {:ucb-value 3.467599010262171
                  :reward 1
                  :n 1
