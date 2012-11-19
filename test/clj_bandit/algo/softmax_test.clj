@@ -1,8 +1,8 @@
-(ns clj-bandit.softmax_test
+(ns clj-bandit.algo.softmax_test
   (use [clojure.test]
        [clj-bandit.core :only (select-arm cumulative-sum)]
        [clj-bandit.storage :only (atom-storage)]
-       [clj-bandit.softmax] :reload))
+       [clj-bandit.algo.softmax] :reload))
 
 (deftest z-values
   (is (= 1.0687444933941748E13

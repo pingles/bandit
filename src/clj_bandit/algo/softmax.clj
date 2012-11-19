@@ -1,4 +1,4 @@
-(ns clj-bandit.softmax
+(ns clj-bandit.algo.softmax
   (:use [clj-bandit.core :only (cumulative-sum BanditAlgorithm weighted-arm-value)]
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt expt)]))

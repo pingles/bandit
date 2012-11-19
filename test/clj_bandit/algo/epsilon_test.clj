@@ -1,8 +1,8 @@
-(ns clj-bandit.epsilon-test
+(ns clj-bandit.algo.epsilon-test
   (:use [clojure.test]
         [clj-bandit.core :only (arms update-reward)]
         [clj-bandit.storage :only (atom-storage)]
-        [clj-bandit.epsilon]))
+        [clj-bandit.algo.epsilon] :reload))
 
 (deftest updating-lever-results
   (is (= {:lever1 {:n 4 :reward 2 :value 2/3}}

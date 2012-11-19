@@ -1,4 +1,4 @@
-(ns clj-bandit.epsilon
+(ns clj-bandit.algo.epsilon
   (:use [clj-bandit.core :only (BanditAlgorithm best-performing weighted-arm-value)]
         [clj-bandit.storage :only (get-arms put-arms)]))
 

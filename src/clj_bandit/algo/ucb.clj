@@ -1,8 +1,7 @@
-(ns clj-bandit.ucb
+(ns clj-bandit.algo.ucb
   (:use [clj-bandit.core :only (BanditAlgorithm individual-maps weighted-arm-value best-performing)]
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt)]))
-
 
 (defn mk-arms
   [labels]
