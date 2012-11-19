@@ -57,7 +57,7 @@
        (let [epsilon-algos (map mk-epsilon-algorithm [0.1 0.2 0.3 0.4 0.5])
              softmax-algos (map mk-softmax-algorithm [0.1 0.2 0.3 0.4 0.5])
              ucb-algo {:algo-name "ucb" :variant "N/A" :algo-fn (fn [] (ucb-algorithm (mk-storage)))}
-             algorithms (concat [ucb-algo])]
+             algorithms (concat [ucb-algo] epsilon-algos softmax-algos)]
          (write-csv csv (apply concat (map (fn [algorithm]
                                              (apply concat (pmap (partial simulation-results algorithm (inc iterations))
                                                                  (range 1 (inc simulations)))))
