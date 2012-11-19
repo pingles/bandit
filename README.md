@@ -14,6 +14,8 @@ In the plots below, `algo.variant` refers to a parameter that can be passed to t
 * softmax: the variant is the algorithm's temperature, behaving much like the epsilon value above.
 * ucb: no variant value is used.
 
+Results are for a 5-armed machine, rewarding at rates of: 10%, 10%, 10%, 10%, 90%. This is the same example as used in the book. Such significantly varying payouts are unlikely for most other applications so I'll update with some more complex simulations later.
+
 ### Average Reward
 
 ![Average Reward](http://clojure.bandit.s3-external-3.amazonaws.com/avg_reward.png)
