@@ -1,7 +1,7 @@
 (ns clj-bandit.simulate
   (:use [clojure.data.csv :only (write-csv)]
         [clojure.java.io :only (writer)]
-        [clj-bandit.algo.epsilon :only (epsilon-greedy-algorithm)]
+        [clj-bandit.algo.epsilon :only (epsilon-greedy-algorithm mk-arms)]
         [clj-bandit.algo.softmax :only (softmax-algorithm)]
         [clj-bandit.algo.ucb :only [ucb-algorithm]]
         [clj-bandit.storage :only (atom-storage)]
