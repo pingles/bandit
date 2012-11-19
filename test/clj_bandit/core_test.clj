@@ -20,3 +20,15 @@
          (weighted-value 2 1 1)))
   (is (= 23/5
          (weighted-value 10 5 1))))
+
+(deftest weighted-arm-values
+  (is (= {:value 1 :n 2 :reward 1}
+         (weighted-arm-value 1 {:n 1 :reward 0 :value 0})))
+  (is (= {:value 0 :n 2 :reward 0}
+         (weighted-arm-value 0 {:n 1 :reward 0 :value 0})))
+  (is (= {:value 1 :n 2 :reward 1}
+         (weighted-arm-value 1 {:n 1 :reward 0 :value 0})))
+  (is (= {:value 1/2 :n 3 :reward 1}
+         (weighted-arm-value 1 {:n 2 :reward 0 :value 0})))
+  (is (= {:value 2/3 :n 4 :reward 2}
+         (weighted-arm-value 1 {:n 3 :reward 1 :value 1/2}))))
