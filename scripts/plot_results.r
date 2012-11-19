@@ -1,9 +1,10 @@
 require(plyr)
 require(ggplot2)
+require(gridExtra)
 
 setwd("~/Work/clj-bandit/tmp")
 
-results <- read.csv(file="./results.csv", header=F)
+results <- read.csv(file="./results-n1000-t250.csv", header=F)
 names(results) <- c("algo.name", "algo.variant", "simulation.number", "t", "chosen.arm", "reward", "cumulative.reward")
 results$algo.variant <- as.factor(results$algo.variant)
 results$algo.name <- as.factor(results$algo.name)
@@ -20,6 +21,4 @@ stats.cumulative.reward <- ddply(results, c("algo.name", "algo.variant", "t"), f
 stats.cumulative.reward.plot <- ggplot(stats.cumulative.reward, aes(x = t, y = V1, color = algo.variant)) +
 facet_wrap(~ algo.name) + geom_line() + xlab("Time (Iteration No.)") + ylab("Cumulative Reward") + ggtitle("Cumulative Reward Performance")
 
-stats.average.reward.plot
-stats.probability.plot
-stats.cumulative.reward.plot
+grid.arrange(stats.average.reward.plot, stats.probability.plot, stats.cumulative.reward.plot)
