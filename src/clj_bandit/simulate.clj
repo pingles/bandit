@@ -1,11 +1,11 @@
 (ns clj-bandit.simulate
   (:use [clojure.data.csv :only (write-csv)]
         [clojure.java.io :only (writer)]
-        [clj-bandit.algo.epsilon :only (epsilon-greedy-algorithm mk-arms)]
+        [clj-bandit.algo.epsilon :only (epsilon-greedy-algorithm)]
         [clj-bandit.algo.softmax :only (softmax-algorithm)]
         [clj-bandit.algo.ucb :only [ucb-algorithm]]
         [clj-bandit.storage :only (atom-storage)]
-        [clj-bandit.core :only (select-arm update-reward cumulative-sum)]))
+        [clj-bandit.core :only (mk-arms select-arm update-reward cumulative-sum)]))
 
 (defn bernoulli-arm [p] (fn [] (if (> (rand) p) 0 1)))
 

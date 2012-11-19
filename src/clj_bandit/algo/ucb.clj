@@ -3,11 +3,6 @@
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt)]))
 
-(defn mk-arms
-  [labels]
-  (letfn [(arm-map [label] {label {:n 0 :reward 0 :value 0}})]
-    (apply merge (map arm-map labels))))
-
 (defn unused-arms
   [arms]
   (map (partial apply hash-map) (filter (fn [[_ {:keys [n]}]] (zero? n)) arms)))

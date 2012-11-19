@@ -1,6 +1,6 @@
 (ns clj-bandit.algo.epsilon-test
   (:use [clojure.test]
-        [clj-bandit.core :only (arms update-reward)]
+        [clj-bandit.core :only (mk-arms arms update-reward)]
         [clj-bandit.storage :only (atom-storage)]
         [clj-bandit.algo.epsilon] :reload))
 

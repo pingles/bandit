@@ -1,5 +1,10 @@
 (ns clj-bandit.core)
 
+(defn mk-arms
+  [labels]
+  (letfn [(arm-map [label] {label {:n 0 :reward 0 :value 0}})]
+    (apply merge (map arm-map labels))))
+
 (defn individual-maps
   "breaks m into a vector of maps. useful to break apart arms map"
   [m]

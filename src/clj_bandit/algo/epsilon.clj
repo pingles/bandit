@@ -2,12 +2,6 @@
   (:use [clj-bandit.core :only (BanditAlgorithm best-performing weighted-arm-value)]
         [clj-bandit.storage :only (get-arms put-arms)]))
 
-(defn mk-arms
-  "Creates the structure suitable for storing arm results for epsilon greedy algo."
-  [labels]
-  (letfn [(arm-map [label] {label {:n 0 :reward 0 :value 0}})]
-    (apply merge (map arm-map labels))))
-
 (defn update-arms
   [reward arm arms]
   (update-in arms [arm] (partial weighted-arm-value reward)))
