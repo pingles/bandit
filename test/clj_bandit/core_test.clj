@@ -12,4 +12,3 @@
       (= {:lever1 {:value 1}}
          (best-performing {:lever1 {:value 1}
                            :lever2 {:value 0}}))))
-

@@ -1,7 +1,8 @@
 (ns clj-bandit.ucb
-  (:use [clj-bandit.core :only (BanditAlgorithm individual-maps)]
+  (:use [clj-bandit.core :only (BanditAlgorithm individual-maps weighted-arm-value)]
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt)]))
+
 
 (defn mk-arms
   [labels]
@@ -47,28 +48,9 @@
             (:ucb-value (->> arm vals first)))]
     (apply max-key performance (individual-maps arms))))
 
-;; TODO
-;; this is the weighted calc as in epsilon
-(defn calc-value
-  [n value reward]
-  (+ (* (/ (dec n) n)
-        value)
-     (* (/ 1 n)
-        reward)))
-
-;; TODO
-;; this is almost the exact same as in epsilon, extract
-(defn arm-value
-  [latest-reward {:keys [n reward value] :as arm}]
-  (let [updated {:n (inc n)
-                 :reward (+ reward latest-reward)}]
-    (if (zero? n)
-      (assoc updated :value latest-reward)
-      (assoc updated :value (calc-value n value latest-reward)))))
-
 (defn update-arms
   [reward arm arms]
-  (update-in arms [arm] #(arm-value reward %)))
+  (update-in arms [arm] (partial weighted-arm-value reward)))
 
 (defn pick-arm
   [arms]

@@ -14,10 +14,26 @@
 
 (defn cumulative-sum
   [coll]
-  (reduce 
-   (fn [v, x] (conj v (+ (last v) x))) 
-   [(first coll)] 
-   (rest coll)))
+  (reduce (fn [v, x] (conj v (+ (last v) x)))
+          [(first coll)]
+          (rest coll)))
+
+(defn weighted-value
+  "calculates the update value given the acknowledgement of a reward."
+  [n value reward]
+  (+ (* (/ (dec n) n)
+        value)
+     (* (/ 1 n)
+        reward)))
+
+(defn weighted-arm-value
+  [latest-reward {:keys [n reward value] :as arm}]
+  (let [updated {:n (inc n)
+                 :reward (+ reward latest-reward)}]
+    (if (zero? n)
+      (assoc updated :value latest-reward)
+      (assoc updated :value (weighted-value n value latest-reward)))))
+
 
 ;; TODO
 ;; update-reward requires acknowledgement of either a reward or not at
@@ -32,4 +48,3 @@
   (select-arm [this] "returns the label for the arm we pulled")
   (update-reward [this arm reward] "update performance for the arm")
   (arms [this] "Current results"))
-
