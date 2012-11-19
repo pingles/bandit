@@ -1,5 +1,5 @@
 (ns clj-bandit.softmax
-  (:use [clj-bandit.core :only (cumulative-sum BanditAlgorithm)]
+  (:use [clj-bandit.core :only (cumulative-sum BanditAlgorithm weighted-arm-value)]
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt expt)]))
 
@@ -59,32 +59,13 @@
   ([temperature arms]
      (make-draw temperature (rand) arms))
   ([temperature rand-val arms]
-     (if (not-every? zero? (map :value (vals arms))) 
+     (if (not-every? zero? (map :value (vals arms)))
        (select-draw rand-val (draw-probabilities temperature arms))
        (apply hash-map (last arms)))))
 
-;; TODO
-;; this is the weighted calc as in epsilon
-(defn calc-value
-  [n value reward]
-  (+ (* (/ (dec n) n)
-        value)
-     (* (/ 1 n)
-        reward)))
-
-;; TODO
-;; this is almost the exact same as in epsilon, extract
-(defn arm-value
-  [latest-reward {:keys [n reward value] :as arm}]
-  (let [updated {:n (inc n)
-                 :reward (+ reward latest-reward)}]
-    (if (zero? n)
-      (assoc updated :value latest-reward)
-      (assoc updated :value (calc-value n value latest-reward)))))
-
 (defn update-arms
   [reward arm arms]
-  (update-in arms [arm] #(arm-value reward %)))
+  (update-in arms [arm] (partial weighted-arm-value reward)))
 
 (defn softmax-algorithm
   "Temperature controls how stable the algorithm is. The lower the temperature the more stable. 0 < temperature < 1"

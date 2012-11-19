@@ -18,16 +18,6 @@
   (is (= [0.015876239976466765 0.1331866678026651 0.9999999999999999]
          (cumulative-sum (probabilities 5/10 [1 2 3])))))
 
-(deftest calculating-arm-value
-  (is (= {:n 1 :reward 1 :value 1}
-         (arm-value 1 {:n 0 :reward 0 :value 0})))
-  (is (= {:n 2 :reward 2 :value 1}
-         (arm-value 1 {:n 1 :reward 1 :value 0})))
-  (is (= {:value 1, :n 3, :reward 3}
-         (arm-value 1 {:n 2 :reward 2 :value 1})))
-  (is (= {:value 23/5 :n 11 :reward 2}
-         (arm-value 1 {:n 10 :reward 1 :value 5}))))
-
 (deftest picking
   (is (= {:arm2 {:cum-p 1.9287498479639178E-22
                  :p 1.9287498479639178E-22
