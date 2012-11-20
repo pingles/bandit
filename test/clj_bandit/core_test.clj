@@ -10,6 +10,12 @@
   (is (= 0.14476482729898826
          (anneal 1000))))
 
+(deftest updating-arms-with-results
+ (is (= {:lever1 {:n 4 :reward 2 :value 2/3}}
+        (update-arms 1 :lever1 {:lever1 {:n 3 :reward 1 :value 1/2}})))
+ (is (= {:lever1 {:n 4 :reward 1 :value 1/3}}
+        (update-arms 0 :lever1 {:lever1 {:n 3 :reward 1 :value 1/2}}))))
+
 (deftest breaking-maps
   (is (= '({:a 1} {:b 2})
          (individual-maps {:a 1 :b 2}))))

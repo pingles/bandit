@@ -45,10 +45,6 @@
                            :n 1
                            :reward 1}}))))
 
-(deftest arm-feedback
-  (is (= {:arm1 {:value 1 :n 2 :reward 2}}
-         (update-arms 1 :arm1 {:arm1 {:n 1 :reward 1 :value 2}}))))
-
 (deftest algorithm
   (let [algo (ucb-algorithm (atom-storage (mk-arms #{:arm1 :arm2})))]
     (is (= {:arm1 {:reward 0, :n 0, :value 0}}

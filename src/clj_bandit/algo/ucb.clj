@@ -1,5 +1,5 @@
 (ns clj-bandit.algo.ucb
-  (:use [clj-bandit.core :only (BanditAlgorithm individual-maps weighted-arm-value best-performing)]
+  (:use [clj-bandit.core :only (BanditAlgorithm individual-maps best-performing update-arms)]
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt)]))
 
@@ -29,10 +29,6 @@
   "adds ucb-value to each arm"
   [arms]
   (apply conj (map (partial arm-ucb-value (total-pulls arms)) (individual-maps arms))))
-
-(defn update-arms
-  [reward arm arms]
-  (update-in arms [arm] (partial weighted-arm-value reward)))
 
 (defn pick-arm
   [arms]

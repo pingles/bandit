@@ -1,5 +1,5 @@
 (ns clj-bandit.algo.softmax
-  (:use [clj-bandit.core :only (cumulative-sum BanditAlgorithm weighted-arm-value)]
+  (:use [clj-bandit.core :only (cumulative-sum BanditAlgorithm update-arms)]
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt expt)]))
 
@@ -56,10 +56,6 @@
      (if (not-every? zero? (map :value (vals arms)))
        (select-draw rand-val (draw-probabilities temperature arms))
        (apply hash-map (last arms)))))
-
-(defn update-arms
-  [reward arm arms]
-  (update-in arms [arm] (partial weighted-arm-value reward)))
 
 (defn softmax-algorithm
   "Temperature controls how stable the algorithm is. The lower the temperature the more stable. 0 < temperature < 1"

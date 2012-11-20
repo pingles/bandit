@@ -44,6 +44,10 @@
       (assoc updated :value latest-reward)
       (assoc updated :value (weighted-value n value latest-reward)))))
 
+(defn update-arms
+  [reward arm arms]
+  (update-in arms [arm] (partial weighted-arm-value reward)))
+
 
 ;; TODO
 ;; update-reward requires acknowledgement of either a reward or not at
