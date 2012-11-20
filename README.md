@@ -15,7 +15,7 @@ Algorithms are defined in `clj-bandit.algo.xxx` namespaces. Algorithms are creat
 For example, to create an epsilon greedy algorithm with 4 arms:
 
 ```clojure
-(ns myexample
+(ns casino.wynn
   (:use [clj-bandit.core :only (mk-arms)]
         [clj-bandit.storage :only (atom-storage)]
         [clj-bandit.algo.epsilon :only (epsilon-greedy-algorithm)]))
