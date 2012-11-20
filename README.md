@@ -30,6 +30,10 @@ Results are for a 5-armed machine, rewarding at rates of: 10%, 10%, 10%, 10%, 90
 
 ![Cumulative Reward](http://clojure.bandit.s3-external-3.amazonaws.com/cumulative_reward.png)
 
+![Maximum Rewards](http://clojure.bandit.s3-external-3.amazonaws.com/max_reward.png)
+
+![Boxplot](http://clojure.bandit.s3-external-3.amazonaws.com/algorithm_reward_boxplot.png)
+
 ## License
 
 Copyright &copy; Paul Ingles 2012
