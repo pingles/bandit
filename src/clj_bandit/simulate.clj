@@ -58,7 +58,7 @@
      (with-open [csv (writer "tmp/results.csv")]
        (let [epsilon-algos (concat (map (partial mk-epsilon-algorithm "standard") [0.1 0.2 0.3 0.4 0.5])
                                    (map (partial mk-epsilon-algorithm "anneal") [anneal]))
-             softmax-algos (map mk-softmax-algorithm "standard" [0.1 0.2 0.3 0.4 0.5])
+             softmax-algos (map (partial mk-softmax-algorithm "standard") [0.1 0.2 0.3 0.4 0.5])
              ucb-algo {:algo-name "ucb" :variant "N/A" :algo-fn (fn [] (ucb-algorithm (mk-storage)))}
              algorithms (concat [ucb-algo] epsilon-algos softmax-algos)]
          (write-csv csv (apply concat (map (fn [algorithm]
