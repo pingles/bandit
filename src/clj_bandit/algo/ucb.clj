@@ -1,5 +1,5 @@
 (ns clj-bandit.algo.ucb
-  (:use [clj-bandit.core :only (BanditAlgorithm individual-maps best-performing update-arms)]
+  (:use [clj-bandit.core :only (BanditAlgorithm individual-maps best-performing update-arms total-pulls)]
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt)]))
 
@@ -8,10 +8,6 @@
   (map (partial apply hash-map) (filter (fn [[_ {:keys [n]}]] (zero? n)) arms)))
 
 (def first-unused-arm (comp first unused-arms))
-
-(defn total-pulls
-  [arms]
-  (reduce + (map (fn [[_ {:keys [n]}]] n) arms)))
 
 (defn bonus-value
   [total-pulls arm-pulls]

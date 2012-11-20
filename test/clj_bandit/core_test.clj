@@ -2,6 +2,10 @@
   (:use clojure.test
         clj-bandit.core))
 
+(deftest number-pulls-across-arms
+  (is (= 1
+         (total-pulls {:arm1 {:n 1}}))))
+
 (deftest annealing-t-value
   (is (= 1.000000049416132E7
          (anneal 1)))

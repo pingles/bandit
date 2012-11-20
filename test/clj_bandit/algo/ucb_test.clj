@@ -14,10 +14,6 @@
                             :arm2 {:n 1}})))
   (is (nil? (first-unused-arm {:arm1 {:n 1}}))))
 
-(deftest number-pulls-across-arms
-  (is (= 1
-         (total-pulls {:arm1 {:n 1}}))))
-
 (deftest arm-bonus
   (is (= 1.2389740629499462
          (bonus-value 10 3)))

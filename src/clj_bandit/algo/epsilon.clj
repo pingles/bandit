@@ -1,5 +1,5 @@
 (ns clj-bandit.algo.epsilon
-  (:use [clj-bandit.core :only (BanditAlgorithm best-performing update-arms)]
+  (:use [clj-bandit.core :only (BanditAlgorithm best-performing update-arms total-pulls)]
         [clj-bandit.storage :only (get-arms put-arms)]))
 
 (defn select-arm
