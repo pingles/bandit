@@ -1,5 +1,10 @@
 (ns clj-bandit.core)
 
+(defn anneal
+  "returns a factor that grows over time. used to increase an algorithms tendency to favour exploitation."
+  [t]
+  (/ 1 (Math/log (+ t 0.0000001))))
+
 (defn mk-arms
   [labels]
   (letfn [(arm-map [label] {label {:n 0 :reward 0 :value 0}})]

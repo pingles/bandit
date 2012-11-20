@@ -2,6 +2,14 @@
   (:use clojure.test
         clj-bandit.core))
 
+(deftest annealing-t-value
+  (is (= 1.000000049416132E7
+         (anneal 1)))
+  (is (= 0.21714724090447302
+         (anneal 100)))
+  (is (= 0.14476482729898826
+         (anneal 1000))))
+
 (deftest breaking-maps
   (is (= '({:a 1} {:b 2})
          (individual-maps {:a 1 :b 2}))))
