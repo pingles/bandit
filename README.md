@@ -6,7 +6,7 @@ Algorithms are implemented following ["Bandit Algorithms for Website Optimizatio
 
 This library aims to be simple; it concerns itself with multi-armed bandit optimisation only. Integrating with web applications etc. is the responsibility of other libraries.
 
-By keeping it small and simple we hope to make it far easier to integrate than existing tools. It will also be far more flexible.
+By keeping it small and simple we hope to make it far easier to integrate than existing tools.
 
 ## Usage
 
