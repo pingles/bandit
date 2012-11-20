@@ -1,7 +1,7 @@
 (ns clj-bandit.core)
 
 (defn anneal
-  "returns a factor that grows over time. used to increase an algorithms tendency to favour exploitation."
+  "returns a factor that increases an algorithm's tendency to favour exploitation over time."
   [t]
   (/ 1 (Math/log (+ t 0.0000001))))
 
@@ -16,14 +16,14 @@
   (map #(apply hash-map %) (seq m)))
   
 ;; TODO
-;; extract function to return a sequence of the arm maps values
+;; extract function to return a sequence of the arms value maps
 
 (defn total-pulls
   [arms]
   (reduce + (map (fn [[_ {:keys [n]}]] n) arms)))
 
 (defn best-performing
-  "Given a map of arms + results, pick the one with the current highest (k val). assumes each map contains a value for k."
+  "Given a map of arms + results, pick the one with the current highest (k val)."
   [k arms]
   (letfn [(performance [arm]
             (k (->> arm vals first)))]

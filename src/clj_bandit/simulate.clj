@@ -5,7 +5,7 @@
         [clj-bandit.algo.softmax :only (softmax-algorithm)]
         [clj-bandit.algo.ucb :only [ucb-algorithm]]
         [clj-bandit.storage :only (atom-storage)]
-        [clj-bandit.core :only (mk-arms select-arm update-reward cumulative-sum)]))
+        [clj-bandit.core :only (mk-arms select-arm update-reward cumulative-sum anneal)]))
 
 (defn bernoulli-arm [p] (fn [] (if (> (rand) p) 0 1)))
 
@@ -19,7 +19,7 @@
   (first (keys pull)))
 
 (defn simulation-results
-  [{:keys [algo-name algo-fn variant] :as algorithm} iterations simulation-number]
+  [{:keys [algo-name algo-fn variant parameter] :as algorithm} iterations simulation-number]
   (let [arm-labels [:arm1 :arm2 :arm3 :arm4 :arm5]
         arms (map bernoulli-arm [0.1 0.1 0.1 0.1 0.9])
         algo (algo-fn)]
@@ -28,7 +28,7 @@
                             reward (draw-arm (nth arms (.indexOf arm-labels chosen-arm)))
                             cumulative-reward 0]
                         (update-reward algo chosen-arm reward)
-                        [algo-name variant simulation-number t chosen-arm reward]))
+                        [algo-name variant parameter simulation-number t chosen-arm reward]))
                     (range 1 iterations))
           cumulative-rewards (cumulative-sum (map last rows))]
       (map conj rows cumulative-rewards))))
@@ -38,15 +38,17 @@
   (atom-storage (mk-arms [:arm1 :arm2 :arm3 :arm4 :arm5])))
 
 (defn mk-epsilon-algorithm
-  [epsilon]
+  [type epsilon]
   {:algo-name "epsilon-greedy"
-   :variant epsilon
+   :parameter (if (= "standard" type) epsilon)
+   :variant type
    :algo-fn (fn [] (epsilon-greedy-algorithm epsilon (mk-storage)))})
 
 (defn mk-softmax-algorithm
-  [temperature]
+  [type temperature]
   {:algo-name "softmax"
-   :variant temperature
+   :parameter (if (= "standard" type) temperature)
+   :variant type
    :algo-fn (fn [] (softmax-algorithm temperature (mk-storage)))})
 
 (defn run-simulation
@@ -54,8 +56,9 @@
      (run-simulation 1000 200))
   ([simulations iterations]
      (with-open [csv (writer "tmp/results.csv")]
-       (let [epsilon-algos (map mk-epsilon-algorithm [0.1 0.2 0.3 0.4 0.5])
-             softmax-algos (map mk-softmax-algorithm [0.1 0.2 0.3 0.4 0.5])
+       (let [epsilon-algos (concat (map (partial mk-epsilon-algorithm "standard") [0.1 0.2 0.3 0.4 0.5])
+                                   (map (partial mk-epsilon-algorithm "anneal") [anneal]))
+             softmax-algos (map mk-softmax-algorithm "standard" [0.1 0.2 0.3 0.4 0.5])
              ucb-algo {:algo-name "ucb" :variant "N/A" :algo-fn (fn [] (ucb-algorithm (mk-storage)))}
              algorithms (concat [ucb-algo] epsilon-algos softmax-algos)]
          (write-csv csv (apply concat (map (fn [algorithm]

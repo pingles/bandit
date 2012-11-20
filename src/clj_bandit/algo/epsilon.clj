@@ -2,18 +2,26 @@
   (:use [clj-bandit.core :only (BanditAlgorithm best-performing update-arms total-pulls)]
         [clj-bandit.storage :only (get-arms put-arms)]))
 
-(defn select-arm
+(defmulti draw-arm (fn [x _] (number? x)))
+
+(defmethod draw-arm true
   [epsilon arms]
   (if (> (rand) epsilon)
     (best-performing :value arms)
     (apply hash-map (rand-nth (seq arms)))))
 
+(defmethod draw-arm false
+  [anneal arms]
+  (draw-arm (anneal (total-pulls arms)) arms))
+
 (defn epsilon-greedy-algorithm
-  "Returns an Epsilon-Greedy bandit with the specified lever labels. uses atom storage"
+  "epsilon can either be a constant factor, or a function that will be
+   applied to the current number of pulls. use with anneal to cause
+   algorithm to favour exploitation over time."
   [epsilon storage]
   (reify BanditAlgorithm
     (select-arm [_]
-      (select-arm epsilon (get-arms storage)))
+      (draw-arm epsilon (get-arms storage)))
     (update-reward [_ arm reward]
       (put-arms storage #(update-arms reward arm %)))
     (arms [_]
