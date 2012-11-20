@@ -13,15 +13,32 @@ results$algo.name <- as.factor(results$algo.name)
 
 stats.average.reward <- ddply(results, c("algo.name", "algo.variant", "t"), function(df) {mean(df$reward)})
 stats.average.reward.plot <- ggplot(stats.average.reward, aes(x = t, y = V1, color = algo.variant)) +
-facet_wrap(~ algo.name) + geom_line() + xlab("Time (Iteration No.)") + ylab("Average Reward") + ggtitle("Average Reward") + ylim(c(0, 1))
+  facet_wrap(~ algo.name) + geom_line() + xlab("Time (Iteration No.)") + ylab("Average Reward") + ggtitle("Average Reward") + ylim(c(0, 1))
 
 stats.probability <- ddply(results, c("algo.name", "algo.variant", "t"), function(df) {mean(df$chosen.arm == ":arm5")})
 stats.probability.plot <- ggplot(stats.probability, aes(x = t, y = V1, color = algo.variant)) +
-facet_wrap(~ algo.name) + geom_line() + ylim(c(0, 1)) + xlab("Time (Iteration No.)") + ylab("Pr(Arm=5)") + ggtitle("Accuracy")
+  facet_wrap(~ algo.name) + geom_line() + ylim(c(0, 1)) + xlab("Time (Iteration No.)") + ylab("Pr(Arm=5)") + ggtitle("Accuracy")
 
 stats.cumulative.reward <- ddply(results, c("algo.name", "algo.variant", "t"), function(df) {mean(df$cumulative.reward)})
 stats.cumulative.reward.plot <- ggplot(stats.cumulative.reward, aes(x = t, y = V1, color = algo.variant)) +
-facet_wrap(~ algo.name) + geom_line() + xlab("Time (Iteration No.)") + ylab("Cumulative Reward") + ggtitle("Cumulative Reward Performance")
+  facet_wrap(~ algo.name) + geom_line() + xlab("Time (Iteration No.)") + ylab("Cumulative Reward") + ggtitle("Cumulative Reward Performance")
+
+# lets plot the best algorithms on a single cumulative plot
+stats.cumulative.reward$algo.name <- as.factor(stats.cumulative.reward$algo.name)
+stats.cumulative.reward$algo.variant <- as.factor(stats.cumulative.reward$algo.variant)
+algoName <- function(name, variant) {
+  paste(name, variant)
+}
+stats.cumulative.reward.maxes <- ddply(stats.cumulative.reward, c("algo.name", "algo.variant"), function(df) {max(df$V1)})
+stats.cumulative.reward.maxes$algo.label <- algoName(stats.cumulative.reward.maxes$algo.name, stats.cumulative.reward.maxes$algo.variant)
+stats.cumulative.reward.maxes.plot <- ggplot(stats.cumulative.reward.maxes, aes(x=algo.label, y=V1, fill=algo.name)) +
+  geom_bar() + ylab("Cumulative Reward") + xlab("Algorithm Parameter") + ggtitle("Maximum Reward") + scale_x_discrete(labels=stats.cumulative.reward.maxes$algo.variant)
+
+stats.cumulative.reward.maxes.plot
+
+stats.cumulative.reward.boxplot <- ggplot(stats.cumulative.reward, aes(algo.name, V1)) +
+  geom_boxplot() + xlab("Algorithm") + ylab("Reward") + ggtitle("Algorithm Rewards")
+stats.cumulative.reward.boxplot
 
 # view individually
 stats.average.reward.plot
