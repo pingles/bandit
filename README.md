@@ -60,7 +60,7 @@ Results are for a 5-armed machine, rewarding at rates of: 10%, 10%, 10%, 10%, 90
 
 ![Cumulative Reward](http://clojure.bandit.s3-external-3.amazonaws.com/cumulative_reward.png)
 
-The following plot shows the summary for the algorithms at `t = 250`: when the simulation has finished.
+The following plot shows the summary for the algorithms at `t = 250`: when the simulation has finished. 1,500 simulations were run.
 
 ![Boxplot](http://clojure.bandit.s3-external-3.amazonaws.com/algorithm_reward_boxplot.png)
 
