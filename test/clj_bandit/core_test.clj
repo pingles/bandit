@@ -1,10 +1,18 @@
 (ns clj-bandit.core-test
-  (:use clojure.test
-        clj-bandit.core))
+  (:use [clojure.test]
+        [clj-bandit.core] :reload))
+
+(deftest extracting-arm-value-maps
+  (is (= '({:n 2} {:n 1})
+         (val-maps {:arm1 {:n 1}
+                    :arm2 {:n 2}}))))
 
 (deftest number-pulls-across-arms
   (is (= 1
-         (total-pulls {:arm1 {:n 1}}))))
+         (total-pulls {:arm1 {:n 1}})))
+  (is (= 5
+         (total-pulls {:arm1 {:n 2}
+                       :arm2 {:n 3}}))))
 
 (deftest annealing-t-value
   (is (= 1.000000049416132E7

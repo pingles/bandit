@@ -14,13 +14,14 @@
   "breaks m into a vector of maps. useful to break apart arms map"
   [m]
   (map #(apply hash-map %) (seq m)))
-  
-;; TODO
-;; extract function to return a sequence of the arms value maps
 
+(defn val-maps
+  [arms]
+  (map (comp first vals) (individual-maps arms)))
+  
 (defn total-pulls
   [arms]
-  (reduce + (map (fn [[_ {:keys [n]}]] n) arms)))
+  (reduce + (map :n (val-maps arms))))
 
 (defn best-performing
   "Given a map of arms + results, pick the one with the current highest (k val)."
