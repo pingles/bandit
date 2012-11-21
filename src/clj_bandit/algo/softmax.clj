@@ -1,5 +1,5 @@
 (ns clj-bandit.algo.softmax
-  (:use [clj-bandit.core :only (cumulative-sum BanditAlgorithm update-arms)]
+  (:use [clj-bandit.core :only (cumulative-sum BanditAlgorithm update-arms anneal total-pulls)]
         [clj-bandit.storage :only (get-arms put-arms)]
         [clojure.math.numeric-tower :only (sqrt expt)]))
 
@@ -57,13 +57,32 @@
        (select-draw rand-val (draw-probabilities temperature arms))
        (apply hash-map (last arms)))))
 
-(defn softmax-algorithm
-  "Temperature controls how stable the algorithm is. The lower the temperature the more stable. 0 < temperature < 1"
-  [temperature storage]
+(defn draw-arm
+  [temperature arms]
+  (make-draw temperature arms))
+
+(defn draw-anneal-arm
+  [annealfn arms]
+  (draw-arm (anneal (total-pulls arms)) arms))
+
+(defmulti softmax-algorithm
+  "temperature controls how stable the algorithm is. The lower the temperature the more stable. 0 < temperature < 1"
+  (fn [temperature _] (number? temperature)))
+
+(defn- mk-algorithm
+  [storage selectfn]
   (reify BanditAlgorithm
     (select-arm [_]
-      (make-draw temperature (get-arms storage)))
+      (selectfn (get-arms storage)))
     (update-reward [_ arm reward]
       (put-arms storage #(update-arms reward arm %)))
     (arms [_]
       (get-arms storage))))
+
+(defmethod softmax-algorithm true
+  [temperature storage]
+  (mk-algorithm storage (partial draw-arm temperature)))
+
+(defmethod softmax-algorithm false
+  [annealfn storage]
+  (mk-algorithm storage (partial draw-anneal-arm annealfn)))
