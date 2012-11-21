@@ -1,6 +1,6 @@
 require(plyr)
 require(ggplot2)
-require(gridExtra)
+#require(gridExtra)
 
 setwd("../tmp")
 
@@ -14,8 +14,8 @@ results$algo.name <- as.factor(results$algo.name)
 results$t <- as.numeric(results$t)
 
 stats.average.reward <- ddply(results, c("algo.name", "algo.variant", "algo.parameter", "t"), function(df) {mean(df$reward)})
-stats.average.reward.plot <- ggplot(stats.average.reward, aes(x = t, y = V1, color = algo.parameter)) +
-  facet_wrap(~ algo.name + algo.variant) + geom_line() + xlab("Time (Iteration No.)") + ylab("Average Reward") + ggtitle("Average Reward") + ylim(c(0, 1))
+stats.average.reward.plot <- ggplot(stats.average.reward, aes(x = t, y = V1, color = algo.parameter)) + geom_smooth() +
+  facet_wrap(~ algo.name + algo.variant) + geom_line() + xlab("Time (Iteration No.)") + ylab("Average Reward") + ggtitle("Average Reward")
 
 stats.average.reward.plot
 
