@@ -36,6 +36,14 @@ For example, to create an epsilon greedy algorithm with 4 arms:
 (update-reward algo :arm1 0)
 ```
 
+## Algorithms
+
+As per the book, the following algorithms have been implemented so far:
+
+* Epsilon-Greedy
+* Softmax
+* UCB
+
 ## Performance
 
 ["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using `clj-bandit.simulate/run-simulation`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
