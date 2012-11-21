@@ -60,7 +60,10 @@
 (defn run-simulation
   "runs a number of monte carlo simulations. horizon specifies the number of pulls that will be made against the bandit. the algorithm aims to optimise the reward over this time.
    arms is a sequence of functions that represent the arms of the bandit.
-   example: (run-simulation (mk-bernoulli-bandit 0.1 0.1 0.1 0.1 0.9) 1 1)"
+   example: (run-simulation (mk-bernoulli-bandit 0.1 0.1 0.1 0.1 0.9) 1 1)
+  
+  result header: algo name, variant [standard or anneal], parameter to algo, simulation #, horizon t, arm picked, reward for this choice, cumulative reward]
+  "
   ([arms]
      (run-simulation arms 1000 200))
   ([arms simulations horizon]
