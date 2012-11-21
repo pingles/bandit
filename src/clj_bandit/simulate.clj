@@ -18,51 +18,64 @@
   [pull]
   (first (keys pull)))
 
+(defn mk-bernoulli-bandit
+  "creates the simulation bandit: a vector of arms that reward with fixed probability."
+  [& p]
+  (map bernoulli-arm p))
+
 (defn simulation-results
-  [{:keys [algo-name algo-fn variant parameter] :as algorithm} iterations simulation-number]
-  (let [arm-labels [:arm1 :arm2 :arm3 :arm4 :arm5]
-        arms (map bernoulli-arm [0.1 0.1 0.1 0.1 0.9])
-        algo (algo-fn)]
-    (let [rows (map (fn [t]
+  [arms arm-labels {:keys [algo-name algo-fn variant parameter] :as algorithm} horizon simulation-number]
+  (let [algo (algo-fn)
+          rows (map (fn [t]
                       (let [chosen-arm (arm-name (select-arm algo))
                             reward (draw-arm (nth arms (.indexOf arm-labels chosen-arm)))
                             cumulative-reward 0]
                         (update-reward algo chosen-arm reward)
                         [algo-name variant parameter simulation-number t chosen-arm reward]))
-                    (range 1 iterations))
+                    (range 1 horizon))
           cumulative-rewards (cumulative-sum (map last rows))]
-      (map conj rows cumulative-rewards))))
+      (map conj rows cumulative-rewards)))
+
+(defn mk-arm-labels [n]
+  (map #(keyword (str "arm" %)) (range n)))
 
 (defn mk-storage
-  []
-  (atom-storage (mk-arms [:arm1 :arm2 :arm3 :arm4 :arm5])))
+  [n]
+  (atom-storage (mk-arms (mk-arm-labels n))))
 
 (defn mk-epsilon-algorithm
-  [type epsilon]
+  [n type epsilon]
   {:algo-name "epsilon-greedy"
    :parameter (if (= "standard" type) epsilon)
    :variant type
-   :algo-fn (fn [] (epsilon-greedy-algorithm epsilon (mk-storage)))})
+   :algo-fn (fn [] (epsilon-greedy-algorithm epsilon (mk-storage n)))})
 
 (defn mk-softmax-algorithm
-  [type temperature]
+  [n type temperature]
   {:algo-name "softmax"
    :parameter (if (= "standard" type) temperature)
    :variant type
-   :algo-fn (fn [] (softmax-algorithm temperature (mk-storage)))})
+   :algo-fn (fn [] (softmax-algorithm temperature (mk-storage n)))})
 
 (defn run-simulation
-  ([]
-     (run-simulation 1000 200))
-  ([simulations iterations]
+  "runs a number of monte carlo simulations. horizon specifies the number of pulls that will be made against the bandit. the algorithm aims to optimise the reward over this time.
+   arms is a sequence of functions that represent the arms of the bandit.
+   example: (run-simulation (mk-bernoulli-bandit 0.1 0.1 0.1 0.1 0.9) 1 1)"
+  ([arms]
+     (run-simulation arms 1000 200))
+  ([arms simulations horizon]
      (with-open [csv (writer "tmp/results.csv")]
-       (let [epsilon-algos (concat (map (partial mk-epsilon-algorithm "standard") [0.1 0.2 0.3 0.4 0.5])
-                                   (map (partial mk-epsilon-algorithm "anneal") [anneal]))
-             softmax-algos (concat (map (partial mk-softmax-algorithm "standard") [0.1 0.2 0.3 0.4 0.5])
-                                   (map (partial mk-softmax-algorithm "anneal") [anneal]))
-             ucb-algo {:algo-name "ucb" :variant nil :algo-fn (fn [] (ucb-algorithm (mk-storage)))}
+       (let [arm-labels    (mk-arm-labels (count arms))
+             epsilon-algos (concat (map (partial mk-epsilon-algorithm (count arms) "standard") [0.1 0.2 0.3 0.4 0.5])
+                                   (map (partial mk-epsilon-algorithm (count arms) "anneal") [anneal]))
+             softmax-algos (concat (map (partial mk-softmax-algorithm (count arms) "standard") [0.1 0.2 0.3 0.4 0.5])
+                                   (map (partial mk-softmax-algorithm (count arms) "anneal") [anneal]))
+             ucb-algo {:algo-name "ucb"
+                       :variant nil
+                       :algo-fn (fn []
+                                  (ucb-algorithm (mk-storage (count arms))))}
              algorithms (concat [ucb-algo] epsilon-algos softmax-algos)]
          (write-csv csv (apply concat (map (fn [algorithm]
-                                             (apply concat (pmap (partial simulation-results algorithm (inc iterations))
+                                             (apply concat (pmap (partial simulation-results arms arm-labels algorithm (inc horizon))
                                                                  (range 1 (inc simulations)))))
                                            algorithms)))))))
