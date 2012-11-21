@@ -2,10 +2,10 @@ require(plyr)
 require(ggplot2)
 require(gridExtra)
 
-setwd("~/Work/clj-bandit/tmp")
+setwd("../tmp")
 
-results <- read.csv(file="./results-n1500-t250.csv", header=F)
-#results <- read.csv(file="./results.csv", header=F)
+#results <- read.csv(file="./results-n1500-t250.csv", header=F)
+results <- read.csv(file="./results.csv", header=F)
 
 names(results) <- c("algo.name", "algo.variant", "algo.parameter", "simulation.number", "t", "chosen.arm", "reward", "cumulative.reward")
 results$algo.variant <- as.factor(results$algo.variant)
