@@ -40,7 +40,7 @@ For example, to create an epsilon greedy algorithm with 4 arms:
 
 ["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using `clj-bandit.simulate/run-simulation`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
 
-In the plots below, `algo.variant` refers to a parameter that can be passed to the algorithm to tune it's desire for experimentation vs exploitation:
+In the plots below, `algo.variant` can refer to either a "standard" or "annealing" algorithm (annealing applies a factor that causes the algorithm to explore less as it gains more experience). For "standard" algorithms, `algo.parameter` represents the temperature or epsilon value used to tune the algorithms tendency to explore.
 
 * Epsilon-Greedy: the variant is the epsilon value (0.1, 0.2 etc.); 0.1 would mean the algorithm would experiment 10% of the time, and exploit the best performing for the remainder.
 * softmax: the variant is the algorithm's temperature, behaving much like the epsilon value above.
