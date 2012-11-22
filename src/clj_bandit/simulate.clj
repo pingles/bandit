@@ -25,13 +25,19 @@
   [& p]
   (map bernoulli-arm p))
 
+(defn arm-label-map
+  [labels arms]
+  (apply merge
+         (map #(apply hash-map %)
+              (partition 2
+                         (interleave labels arms)))))
+
 (defn simulation-results
-  [arms arm-labels {:keys [algo-name algo-fn variant parameter] :as algorithm} horizon simulation-number]
+  [arms {:keys [algo-name algo-fn variant parameter] :as algorithm} horizon simulation-number]
   (let [algo (algo-fn)
         rows (map (fn [t]
                     (let [chosen-arm (arm-name (select-arm algo))
-                          reward (draw-arm (nth arms (.indexOf ^clojure.lang.LazySeq arm-labels chosen-arm)))
-                          cumulative-reward 0]
+                          reward (draw-arm (get arms chosen-arm))]
                       (update-reward algo chosen-arm reward)
                       [algo-name variant parameter simulation-number t chosen-arm reward]))
                   (range 1 horizon))
@@ -81,9 +87,15 @@
                                   (ucb-algorithm (mk-storage (count arms))))}
              algorithms (concat [ucb-algo] epsilon-algos softmax-algos)
              n (+ 2 (.. Runtime getRuntime availableProcessors))
-             algo-chunks (partition n algorithms)]
+             algo-chunks (partition n algorithms)
+             as (arm-label-map arm-labels arms)]
          (doseq [chunk algo-chunks]
            (doseq [algo chunk]
              (doseq [sim (range 1 (inc simulations))]
-               (doseq [result (simulation-results arms arm-labels algo (inc horizon) sim)]
+               (doseq [result (simulation-results as algo (inc horizon) sim)]
                  (.write writer (str (join "," result) "\n"))))))))))
+
+(defn -main
+  []
+  (println "Process name" (.getName (java.lang.management.ManagementFactory/getRuntimeMXBean)))
+  (run-simulation (mk-bernoulli-bandit 0.1 0.1 0.1 0.1 0.9) 100 250))
