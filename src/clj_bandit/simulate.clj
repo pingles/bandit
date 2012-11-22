@@ -1,11 +1,13 @@
 (ns clj-bandit.simulate
-  (:use [clojure.data.csv :only (write-csv)]
+  (:use [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
         [clj-bandit.algo.epsilon :only (epsilon-greedy-algorithm)]
         [clj-bandit.algo.softmax :only (softmax-algorithm)]
         [clj-bandit.algo.ucb :only [ucb-algorithm]]
         [clj-bandit.storage :only (atom-storage)]
         [clj-bandit.core :only (mk-arms select-arm update-reward cumulative-sum anneal)]))
+
+(set! *warn-on-reflection* true)
 
 (defn bernoulli-arm [p] (fn [] (if (> (rand) p) 0 1)))
 
@@ -26,15 +28,15 @@
 (defn simulation-results
   [arms arm-labels {:keys [algo-name algo-fn variant parameter] :as algorithm} horizon simulation-number]
   (let [algo (algo-fn)
-          rows (map (fn [t]
-                      (let [chosen-arm (arm-name (select-arm algo))
-                            reward (draw-arm (nth arms (.indexOf arm-labels chosen-arm)))
-                            cumulative-reward 0]
-                        (update-reward algo chosen-arm reward)
-                        [algo-name variant parameter simulation-number t chosen-arm reward]))
-                    (range 1 horizon))
-          cumulative-rewards (cumulative-sum (map last rows))]
-      (map conj rows cumulative-rewards)))
+        rows (map (fn [t]
+                    (let [chosen-arm (arm-name (select-arm algo))
+                          reward (draw-arm (nth arms (.indexOf ^clojure.lang.LazySeq arm-labels chosen-arm)))
+                          cumulative-reward 0]
+                      (update-reward algo chosen-arm reward)
+                      [algo-name variant parameter simulation-number t chosen-arm reward]))
+                  (range 1 horizon))
+        cumulative-rewards (cumulative-sum (map last rows))]
+    (map conj rows cumulative-rewards)))
 
 (defn mk-arm-labels [n]
   (map #(keyword (str "arm" %)) (range n)))
@@ -67,7 +69,7 @@
   ([arms]
      (run-simulation arms 1000 200))
   ([arms simulations horizon]
-     (with-open [csv (writer "tmp/results.csv")]
+     (with-open [writer (clojure.java.io/writer "tmp/results.csv")]
        (let [arm-labels    (mk-arm-labels (count arms))
              epsilon-algos (concat (map (partial mk-epsilon-algorithm (count arms) "standard") [0.1 0.2 0.3 0.4 0.5])
                                    (map (partial mk-epsilon-algorithm (count arms) "anneal") [anneal]))
@@ -77,8 +79,11 @@
                        :variant nil
                        :algo-fn (fn []
                                   (ucb-algorithm (mk-storage (count arms))))}
-             algorithms (concat [ucb-algo] epsilon-algos softmax-algos)]
-         (write-csv csv (apply concat (map (fn [algorithm]
-                                             (apply concat (pmap (partial simulation-results arms arm-labels algorithm (inc horizon))
-                                                                 (range 1 (inc simulations)))))
-                                           algorithms)))))))
+             algorithms (concat [ucb-algo] epsilon-algos softmax-algos)
+             n (+ 2 (.. Runtime getRuntime availableProcessors))
+             algo-chunks (partition n algorithms)]
+         (doseq [chunk algo-chunks]
+           (doseq [algo chunk]
+             (doseq [sim (range 1 (inc simulations))]
+               (doseq [result (simulation-results arms arm-labels algo (inc horizon) sim)]
+                 (.write writer (str (join "," result) "\n"))))))))))
