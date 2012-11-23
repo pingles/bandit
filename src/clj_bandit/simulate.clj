@@ -97,13 +97,13 @@
            algo-chunks (chunkify chunk-size algorithms)
            as (arm-label-map arm-labels arms)]
        (doseq [chunk algo-chunks]
+         (println "starting chunk: " (map :algo-name chunk))
          (future
-           (do (println "starting chunk")
-               (with-open [writer (writer (unique-file "./tmp"))]
-                 (doseq [algo chunk]
-                   (doseq [sim (range 1 (inc simulations))]
-                     (doseq [result (simulation-results as algo (inc horizon) sim)]
-                       (.write writer (str (join "," result) "\n"))))))))))))
+           (with-open [writer (writer (unique-file "./tmp"))]
+             (doseq [algo chunk]
+               (doseq [sim (range 1 (inc simulations))]
+                 (doseq [result (simulation-results as algo (inc horizon) sim)]
+                   (.write writer (str (join "," result) "\n")))))))))))
 
 (defn -main
   []
