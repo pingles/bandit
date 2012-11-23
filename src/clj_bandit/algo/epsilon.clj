@@ -30,7 +30,6 @@
   [anneal arms]
   (draw-arm (anneal (total-pulls arms)) arms))
 
-
 (defn weighted-value
   [n value reward]
   (+ (* (/ (dec n) n)
@@ -48,8 +47,24 @@
 
 
 
+(defn fold-arm
+  "returns arms with the data for arm folded in."
+  [{:keys [name] :as arm} arms]
+  (conj (remove (fn [x] (= name (:name x)))
+                arms)
+        arm))
 
 
+
+
+
+
+
+
+
+;; TODO
+;; Want to delete all the stuff below. just need a way to fold
+;; updated arms together
 
 
 (defmulti epsilon-greedy-algorithm

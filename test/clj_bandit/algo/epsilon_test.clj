@@ -42,3 +42,11 @@
                (reward 0)
                (reward 0)
                (reward 1))))))
+
+(deftest updating-bandit-state
+  (let [arms [(e/mk-arm :arm1)
+              (e/mk-arm :arm2)]]
+    (is (= [(e/mk-arm :arm1 :pulls 1)
+            (e/mk-arm :arm2 :pulls 0)]
+           (fold-arm (e/mk-arm :arm1 :pulls 1)
+                     arms)))))
