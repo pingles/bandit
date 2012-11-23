@@ -90,10 +90,10 @@
              algo-chunks (partition n algorithms)
              as (arm-label-map arm-labels arms)]
          (doseq [chunk algo-chunks]
-           (doseq [algo chunk]
-             (doseq [sim (range 1 (inc simulations))]
-               (doseq [result (simulation-results as algo (inc horizon) sim)]
-                 (.write writer (str (join "," result) "\n"))))))))))
+           (future (doseq [algo chunk]
+                     (doseq [sim (range 1 (inc simulations))]
+                       (doseq [result (simulation-results as algo (inc horizon) sim)]
+                         (.write writer (str (join "," result) "\n")))))))))))
 
 (defn -main
   []
