@@ -1,6 +1,7 @@
 (ns clj-bandit.simulate
   (:use [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
+        [clojure.math.numeric-tower :only (floor)]
         [clj-bandit.algo.epsilon :only (epsilon-greedy-algorithm)]
         [clj-bandit.algo.softmax :only (softmax-algorithm)]
         [clj-bandit.algo.ucb :only [ucb-algorithm]]
@@ -69,6 +70,13 @@
   [dir]
   (clojure.java.io/file dir (str "results-" (System/currentTimeMillis) ".csv")))
 
+(defn chunk-size
+  "what chunk size maximises parallel execution. (chunk n) == number of processors"
+  [coll]
+  (let [processors (.. Runtime getRuntime availableProcessors)]
+    (floor (/ (count coll)
+              processors))))
+
 (defn chunkify
   [n coll]
   (partition n n [] coll))
@@ -93,8 +101,7 @@
                      :algo-fn (fn []
                                 (ucb-algorithm (mk-storage (count arms))))}
            algorithms (concat [ucb-algo] epsilon-algos softmax-algos)
-           n (min (count algorithms)
-                  (.. Runtime getRuntime availableProcessors))
+           n (chunk-size algorithms)
            algo-chunks (chunkify n algorithms)
            as (arm-label-map arm-labels arms)]
        (println (count algorithms) "algorithms")
