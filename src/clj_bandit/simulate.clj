@@ -1,7 +1,7 @@
 (ns clj-bandit.simulate
   (:use [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
-        [clojure.math.numeric-tower :only (floor)]
+        [clojure.math.numeric-tower :only (ceil)]
         [clj-bandit.algo.epsilon :only (epsilon-greedy-algorithm)]
         [clj-bandit.algo.softmax :only (softmax-algorithm)]
         [clj-bandit.algo.ucb :only [ucb-algorithm]]
@@ -74,8 +74,8 @@
   "what chunk size maximises parallel execution. (chunk n) == number of processors"
   [coll]
   (let [processors (.. Runtime getRuntime availableProcessors)]
-    (floor (/ (count coll)
-              processors))))
+    (ceil (/ (count coll)
+             processors))))
 
 (defn chunkify
   [n coll]
