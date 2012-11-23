@@ -2,7 +2,7 @@
   (:use [clj-bandit.core :only (BanditAlgorithm update-arms)]
         [clj-bandit.storage :only (get-arms put-arms)]))
 
-(defrecord Arm [name n value])
+(defrecord Arm [name pulls value])
 
 (defn mk-arm
   ([name]
@@ -12,7 +12,7 @@
 
 (defn total-pulls
   [arms]
-  (reduce + (map :n arms)))
+  (reduce + (map :pulls arms)))
 
 (defn best-performing
   [arms]
@@ -39,12 +39,12 @@
         reward)))
 
 (defn reward
-  "updates the arm with its new weighted value."
-  [{:keys [n value] :as arm} reward]
-  (let [u (assoc arm :n (inc (:n arm)))]
-    (if (zero? n)
+  "returns the arm, with an update n and reward calculation."
+  [{:keys [pulls value] :as arm} reward]
+  (let [u (assoc arm :pulls (inc pulls))]
+    (if (zero? pulls)
       (assoc u :value reward)
-      (assoc u :value (weighted-value n value reward)))))
+      (assoc u :value (weighted-value pulls value reward)))))
 
 
 

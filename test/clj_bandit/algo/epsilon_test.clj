@@ -22,8 +22,8 @@
 
 (deftest calculating-total-pulls
   (is (= 101
-         (total-pulls [(e/mk-arm :arm1 :n 1)
-                       (e/mk-arm :arm2 :n 100)]))))
+         (total-pulls [(e/mk-arm :arm1 :pulls 1)
+                       (e/mk-arm :arm2 :pulls 100)]))))
 
 (deftest drawing-arms
   (testing "standard"
@@ -32,12 +32,12 @@
                               (e/mk-arm :arm2 :value 2)])))))
 
 (deftest tracking-arm-reward
-  (let [arm (e/mk-arm :arm1 :value 0 :n 0)]
-    (is (= (e/mk-arm :arm1 :n 1 :value 0)
+  (let [arm (e/mk-arm :arm1 :value 0 :pulls 0)]
+    (is (= (e/mk-arm :arm1 :pulls 1 :value 0)
            (reward arm 0)))
-    (is (= (e/mk-arm :arm1 :n 1 :value 1)
+    (is (= (e/mk-arm :arm1 :pulls 1 :value 1)
            (reward arm 1)))
-    (is (= (e/mk-arm :arm1 :n 3 :value 1/2)
+    (is (= (e/mk-arm :arm1 :pulls 3 :value 1/2)
            (-> arm
                (reward 0)
                (reward 0)
