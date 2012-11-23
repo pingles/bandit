@@ -69,6 +69,10 @@
   [dir]
   (clojure.java.io/file dir (str "results-" (System/currentTimeMillis) ".csv")))
 
+(defn chunkify
+  [n coll]
+  (partition n n [] coll))
+
 (defn run-simulation
   "runs a number of monte carlo simulations. horizon specifies the number of pulls that will be made against the bandit. the algorithm aims to optimise the reward over this time.
    arms is a sequence of functions that represent the arms of the bandit.
@@ -89,16 +93,21 @@
                      :algo-fn (fn []
                                 (ucb-algorithm (mk-storage (count arms))))}
            algorithms (concat [ucb-algo] epsilon-algos softmax-algos)
-           n (min (+ 2 (.. Runtime getRuntime availableProcessors))
-                  (count algorithms))
-           algo-chunks (partition n algorithms)
+           n (min (count algorithms)
+                  (.. Runtime getRuntime availableProcessors))
+           algo-chunks (chunkify n algorithms)
            as (arm-label-map arm-labels arms)]
+       (println (count algorithms) "algorithms")
+       (println "n" n)
+       (println "Breaking into" (count algo-chunks) "chunks of sizes" (map count algo-chunks))
        (doseq [chunk algo-chunks]
-         (future (with-open [writer (writer (unique-file "./tmp"))]
-                   (doseq [algo chunk]
-                     (doseq [sim (range 1 (inc simulations))]
-                       (doseq [result (simulation-results as algo (inc horizon) sim)]
-                         (.write writer (str (join "," result) "\n")))))))))))
+         (future
+           (do (println "starting chunk")
+               (with-open [writer (writer (unique-file "./tmp"))]
+                 (doseq [algo chunk]
+                   (doseq [sim (range 1 (inc simulations))]
+                     (doseq [result (simulation-results as algo (inc horizon) sim)]
+                       (.write writer (str (join "," result) "\n"))))))))))))
 
 (defn -main
   []
