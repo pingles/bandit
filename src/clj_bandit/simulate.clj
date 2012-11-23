@@ -1,4 +1,5 @@
 (ns clj-bandit.simulate
+  (:import [java.util UUID])
   (:use [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
         [clojure.math.numeric-tower :only (ceil)]
@@ -68,7 +69,7 @@
 
 (defn unique-file
   [dir]
-  (clojure.java.io/file dir (str "results-" (System/currentTimeMillis) ".csv")))
+  (clojure.java.io/file dir (str "results-" (UUID/randomUUID) ".csv")))
 
 (defn chunkify
   [n coll]
@@ -108,4 +109,4 @@
 (defn -main
   []
   (println "Process name" (.getName (java.lang.management.ManagementFactory/getRuntimeMXBean)))
-  (run-simulation (mk-bernoulli-bandit 0.1 0.1 0.1 0.1 0.9) 100 250))
+  (run-simulation (mk-bernoulli-bandit 0.1 0.1 0.1 0.1 0.9) 100 250 6))
