@@ -65,6 +65,10 @@
    :variant type
    :algo-fn (fn [] (softmax-algorithm temperature (mk-storage n)))})
 
+(defn unique-file
+  [dir]
+  (clojure.java.io/file dir (str "results-" (System/currentTimeMillis) ".csv")))
+
 (defn run-simulation
   "runs a number of monte carlo simulations. horizon specifies the number of pulls that will be made against the bandit. the algorithm aims to optimise the reward over this time.
    arms is a sequence of functions that represent the arms of the bandit.
@@ -75,22 +79,22 @@
   ([arms]
      (run-simulation arms 1000 200))
   ([arms simulations horizon]
-     (with-open [writer (clojure.java.io/writer "tmp/results.csv")]
-       (let [arm-labels    (mk-arm-labels (count arms))
-             epsilon-algos (concat (map (partial mk-epsilon-algorithm (count arms) "standard") [0.1 0.2 0.3 0.4 0.5])
-                                   (map (partial mk-epsilon-algorithm (count arms) "anneal") [anneal]))
-             softmax-algos (concat (map (partial mk-softmax-algorithm (count arms) "standard") [0.1 0.2 0.3 0.4 0.5])
-                                   (map (partial mk-softmax-algorithm (count arms) "anneal") [anneal]))
-             ucb-algo {:algo-name "ucb"
-                       :variant nil
-                       :algo-fn (fn []
-                                  (ucb-algorithm (mk-storage (count arms))))}
-             algorithms (concat [ucb-algo] epsilon-algos softmax-algos)
-             n (+ 2 (.. Runtime getRuntime availableProcessors))
-             algo-chunks (partition n algorithms)
-             as (arm-label-map arm-labels arms)]
-         (doseq [chunk algo-chunks]
-           (future (doseq [algo chunk]
+     (let [arm-labels    (mk-arm-labels (count arms))
+           epsilon-algos (concat (map (partial mk-epsilon-algorithm (count arms) "standard") [0.1 0.2 0.3 0.4 0.5])
+                                 (map (partial mk-epsilon-algorithm (count arms) "anneal") [anneal]))
+           softmax-algos (concat (map (partial mk-softmax-algorithm (count arms) "standard") [0.1 0.2 0.3 0.4 0.5])
+                                 (map (partial mk-softmax-algorithm (count arms) "anneal") [anneal]))
+           ucb-algo {:algo-name "ucb"
+                     :variant nil
+                     :algo-fn (fn []
+                                (ucb-algorithm (mk-storage (count arms))))}
+           algorithms (concat [ucb-algo] epsilon-algos softmax-algos)
+           n (+ 2 (.. Runtime getRuntime availableProcessors))
+           algo-chunks (partition n algorithms)
+           as (arm-label-map arm-labels arms)]
+       (doseq [chunk algo-chunks]
+         (future (with-open [writer (writer (unique-file "./tmp"))]
+                   (doseq [algo chunk]
                      (doseq [sim (range 1 (inc simulations))]
                        (doseq [result (simulation-results as algo (inc horizon) sim)]
                          (.write writer (str (join "," result) "\n")))))))))))
