@@ -89,7 +89,8 @@
                      :algo-fn (fn []
                                 (ucb-algorithm (mk-storage (count arms))))}
            algorithms (concat [ucb-algo] epsilon-algos softmax-algos)
-           n (+ 2 (.. Runtime getRuntime availableProcessors))
+           n (min (+ 2 (.. Runtime getRuntime availableProcessors))
+                  (count algorithms))
            algo-chunks (partition n algorithms)
            as (arm-label-map arm-labels arms)]
        (doseq [chunk algo-chunks]
