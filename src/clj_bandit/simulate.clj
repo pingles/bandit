@@ -70,13 +70,6 @@
   [dir]
   (clojure.java.io/file dir (str "results-" (System/currentTimeMillis) ".csv")))
 
-(defn chunk-size
-  "what chunk size maximises parallel execution. (chunk n) == number of processors"
-  [coll]
-  (let [processors (.. Runtime getRuntime availableProcessors)]
-    (ceil (/ (count coll)
-             processors))))
-
 (defn chunkify
   [n coll]
   (partition n n [] coll))
@@ -89,8 +82,8 @@
   result header: algo name, variant [standard or anneal], parameter to algo, simulation #, horizon t, arm picked, reward for this choice, cumulative reward]
   "
   ([arms]
-     (run-simulation arms 1000 200))
-  ([arms simulations horizon]
+     (run-simulation arms 1000 200 100))
+  ([arms simulations horizon chunk-size]
      (let [arm-labels    (mk-arm-labels (count arms))
            epsilon-algos (concat (map (partial mk-epsilon-algorithm (count arms) "standard") [0.1 0.2 0.3 0.4 0.5])
                                  (map (partial mk-epsilon-algorithm (count arms) "anneal") [anneal]))
@@ -101,12 +94,8 @@
                      :algo-fn (fn []
                                 (ucb-algorithm (mk-storage (count arms))))}
            algorithms (concat [ucb-algo] epsilon-algos softmax-algos)
-           n (chunk-size algorithms)
-           algo-chunks (chunkify n algorithms)
+           algo-chunks (chunkify chunk-size algorithms)
            as (arm-label-map arm-labels arms)]
-       (println (count algorithms) "algorithms")
-       (println "n" n)
-       (println "Breaking into" (count algo-chunks) "chunks of sizes" (map count algo-chunks))
        (doseq [chunk algo-chunks]
          (future
            (do (println "starting chunk")
