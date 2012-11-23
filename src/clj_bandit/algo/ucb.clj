@@ -5,7 +5,7 @@
 
 (defn unused-arms
   [arms]
-  (map (partial apply hash-map) (filter (fn [[_ {:keys [n]}]] (zero? n)) arms)))
+  (filter (fn [{:keys [pulls]}] (zero? pulls)) arms))
 
 (def first-unused-arm (comp first unused-arms))
 
