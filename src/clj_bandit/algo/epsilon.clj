@@ -25,7 +25,7 @@
 
 (defn draw-arm
   ([epsilon arms]
-     (draw-arm (rand) arms))
+     (draw-arm epsilon (rand) arms))
   ([epsilon n arms]
      (if (> n epsilon)
        (best-performing arms)
