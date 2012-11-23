@@ -1,28 +1,5 @@
-(ns clj-bandit.algo.epsilon)
-
-(defrecord Arm [name pulls value])
-
-(defn mk-arm
-  ([name]
-     (Arm. name 0 0))
-  ([name & keyvals]
-     (apply assoc (mk-arm name) keyvals)))
-
-(defn total-pulls
-  [arms]
-  (reduce + (map :pulls arms)))
-
-(defn best-performing
-  [arms]
-  (apply max-key :value arms))
-
-(defn draw-arm
-  ([epsilon arms]
-     (draw-arm (rand) arms))
-  ([epsilon n arms]
-     (if (> n epsilon)
-       (best-performing arms)
-       (rand-nth (seq arms)))))
+(ns clj-bandit.algo.epsilon
+  (:use [clj-bandit.bandit :only (best-performing total-pulls)]))
 
 (defn weighted-value
   [n value reward]
@@ -46,6 +23,13 @@
                 arms)
         arm))
 
+(defn draw-arm
+  ([epsilon arms]
+     (draw-arm (rand) arms))
+  ([epsilon n arms]
+     (if (> n epsilon)
+       (best-performing arms)
+       (rand-nth (seq arms)))))
 
 ;; stuff needed to operate the bandit:
 
@@ -53,14 +37,11 @@
 
 (defmethod select-arm true
   [epsilon arms]
-  (if (> (rand) epsilon)
-    (best-performing arms)
-    (rand-nth (seq arms))))
+  (draw-arm epsilon arms))
 
 (defmethod select-arm false
   [annealfn arms]
-  (draw-arm (annealfn (total-pulls arms))
-            arms))
+  (draw-arm (annealfn (total-pulls arms)) arms))
 
 (comment
   (def arms (map mk-arm [:arm1 :arm2 :arm3]))
