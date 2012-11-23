@@ -1,6 +1,4 @@
-(ns clj-bandit.algo.epsilon
-  (:use [clj-bandit.core :only (BanditAlgorithm update-arms)]
-        [clj-bandit.storage :only (get-arms put-arms)]))
+(ns clj-bandit.algo.epsilon)
 
 (defrecord Arm [name pulls value])
 
@@ -26,10 +24,6 @@
        (best-performing arms)
        (rand-nth (seq arms)))))
 
-(defn draw-anneal-arm
-  [anneal arms]
-  (draw-arm (anneal (total-pulls arms)) arms))
-
 (defn weighted-value
   [n value reward]
   (+ (* (/ (dec n) n)
@@ -45,8 +39,6 @@
       (assoc u :value reward)
       (assoc u :value (weighted-value pulls value reward)))))
 
-
-
 (defn fold-arm
   "returns arms with the data for arm folded in."
   [{:keys [name] :as arm} arms]
@@ -55,8 +47,25 @@
         arm))
 
 
+;; stuff needed to operate the bandit:
 
+(defmulti select-arm (fn [epsilon arms] (number? epsilon)))
 
+(defmethod select-arm true
+  [epsilon arms]
+  (if (> (rand) epsilon)
+    (best-performing arms)
+    (rand-nth (seq arms))))
+
+(defmethod select-arm false
+  [annealfn arms]
+  (draw-arm (annealfn (total-pulls arms))
+            arms))
+
+(comment
+  (def arms (map mk-arm [:arm1 :arm2 :arm3]))
+  (def selected-arm (select-arm 0.1 arms))
+  (select-arm 0.1 (fold-arm (reward selected-arm 1) arms)))
 
 
 
@@ -67,28 +76,28 @@
 ;; updated arms together
 
 
-(defmulti epsilon-greedy-algorithm
-  "epsilon can either be a constant factor, or a function that will be
-   applied to the current number of pulls. use with anneal to cause
-   algorithm to favour exploitation over time."
-  (fn [x _] (number? x)))
+;; (defmulti epsilon-greedy-algorithm
+;;   "epsilon can either be a constant factor, or a function that will be
+;;    applied to the current number of pulls. use with anneal to cause
+;;    algorithm to favour exploitation over time."
+;;   (fn [x _] (number? x)))
 
-(defn- mk-algorithm
-  [storage selectfn]
-  (reify BanditAlgorithm
-    (select-arm [_]
-      (selectfn (get-arms storage)))
-    (update-reward [_ arm reward]
-      (put-arms storage #(update-arms reward arm %)))
-    (arms [_]
-      (get-arms storage))))
+;; (defn- mk-algorithm
+;;   [storage selectfn]
+;;   (reify BanditAlgorithm
+;;     (select-arm [_]
+;;       (selectfn (get-arms storage)))
+;;     (update-reward [_ arm reward]
+;;       (put-arms storage #(update-arms reward arm %)))
+;;     (arms [_]
+;;       (get-arms storage))))
 
-(defmethod epsilon-greedy-algorithm true
-  [epsilon storage]
-  (mk-algorithm storage (partial draw-arm epsilon)))
+;; (defmethod epsilon-greedy-algorithm true
+;;   [epsilon storage]
+;;   (mk-algorithm storage (partial draw-arm epsilon)))
 
-(defmethod epsilon-greedy-algorithm false
-  [annealfn storage]
-  (mk-algorithm storage (partial draw-anneal-arm annealfn)))
+;; (defmethod epsilon-greedy-algorithm false
+;;   [annealfn storage]
+;;   (mk-algorithm storage (partial draw-anneal-arm annealfn)))
 
 
