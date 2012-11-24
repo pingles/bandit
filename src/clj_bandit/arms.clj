@@ -12,6 +12,10 @@
   [arms]
   (reduce + (map :pulls arms)))
 
+(defn unpulled
+  [arms]
+  (filter #(zero? (:pulls %)) arms))
+
 (defn best-performing
   [k arms]
   (apply max-key k arms))

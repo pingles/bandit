@@ -1,5 +1,6 @@
 (ns clj-bandit.algo.softmax
-  (:use [clj-bandit.core :only (cumulative-sum)]))
+  (:use [clj-bandit.core :only (cumulative-sum)]
+        [clj-bandit.arms :only (unpulled)]))
 
 (defn z
   [temperature values]
@@ -30,7 +31,7 @@
   ([temperature arms]
      (select-draw (rand) arms))
   ([temperature rand-val arms]
-     (or (first (filter #(zero? (:pulls %)) arms))
+     (or (first (unpulled arms))
          (first (filter (fn [{:keys [cumulative-p]}]
                           (> cumulative-p rand-val))
                         (probabilities temperature arms)))
