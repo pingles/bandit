@@ -39,4 +39,6 @@
       (is (= (mk-arm :arm1 :p 0.5 :cumulative-p 0.5 :pulls 10)
              (select-draw 1 0.05 arms)))
       (is (= (mk-arm :arm2 :p 0.5 :cumulative-p 1.0 :pulls 10)
-             (select-draw 1 0.91 arms))))))
+             (select-draw 1 0.91 arms)))
+      (is (= (mk-arm :arm2 :cumulative-p 0.9 :pulls 10)
+             (select-draw 1 100 arms))))))
