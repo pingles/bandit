@@ -22,10 +22,8 @@
   "adds softmax p values to arms"
   [temperature arms]
   (let [probs (map #(probability temperature % arms) arms)
-        arms (map (fn [arm p] (assoc arm :p p)) arms probs)]
-    (map #(assoc %1 :cumulative-p %2)
-         arms
-         (cumulative-sum probs))))
+        arms (map #(assoc %1 :p %2) arms probs)]
+    (map #(assoc %1 :cumulative-p %2) arms (cumulative-sum probs))))
 
 (defn select-draw
   ([temperature arms]
