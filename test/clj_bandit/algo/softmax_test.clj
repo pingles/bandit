@@ -1,6 +1,5 @@
 (ns clj-bandit.algo.softmax_test
   (use [clojure.test]
-       [clj-bandit.core :only (cumulative-sum)]
        [clj-bandit.arms :only (mk-arm)]
        [clj-bandit.algo.softmax] :reload))
 
