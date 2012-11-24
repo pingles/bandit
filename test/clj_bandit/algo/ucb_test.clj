@@ -1,7 +1,7 @@
 (ns clj-bandit.algo.ucb_test
   (:use [clojure.test]
         [clj-bandit.storage :only (atom-storage)]
-        [clj-bandit.bandit :only (mk-arm best-performing)]
+        [clj-bandit.arms :only (mk-arm best-performing)]
         [clj-bandit.algo.ucb] :reload))
 
 (deftest picks-unpulled-arms

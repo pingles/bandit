@@ -1,5 +1,5 @@
 (ns clj-bandit.algo.epsilon
-  (:use [clj-bandit.bandit :only (best-performing total-pulls)]))
+  (:use [clj-bandit.arms :only (best-performing total-pulls)]))
 
 (defn draw-arm
   ([epsilon arms]

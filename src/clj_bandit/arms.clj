@@ -1,4 +1,4 @@
-(ns clj-bandit.bandit)
+(ns clj-bandit.arms)
 
 (defrecord Arm [name pulls value])
 

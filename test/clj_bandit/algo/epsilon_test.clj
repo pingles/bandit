@@ -1,6 +1,6 @@
 (ns clj-bandit.algo.epsilon-test
   (:use [clojure.test]
-        [clj-bandit.bandit :only (mk-arm best-performing total-pulls reward fold-arm)]
+        [clj-bandit.arms :only (mk-arm best-performing total-pulls reward fold-arm)]
         [clj-bandit.storage :only (atom-storage)]
         [clj-bandit.algo.epsilon] :reload))
 

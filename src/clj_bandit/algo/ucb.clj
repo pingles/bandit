@@ -1,6 +1,6 @@
 (ns clj-bandit.algo.ucb
   (:use [clj-bandit.storage :only (get-arms put-arms)]
-        [clj-bandit.bandit :only (best-performing total-pulls)]
+        [clj-bandit.arms :only (best-performing total-pulls)]
         [clojure.math.numeric-tower :only (sqrt)]))
 
 (defn unused-arms
