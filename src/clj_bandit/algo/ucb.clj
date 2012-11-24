@@ -1,6 +1,6 @@
 (ns clj-bandit.algo.ucb
-  (:use [clj-bandit.core :only (BanditAlgorithm individual-maps best-performing update-arms total-pulls)]
-        [clj-bandit.storage :only (get-arms put-arms)]
+  (:use [clj-bandit.storage :only (get-arms put-arms)]
+        [clj-bandit.bandit :only (best-performing)]
         [clojure.math.numeric-tower :only (sqrt)]))
 
 (defn unused-arms
@@ -9,34 +9,24 @@
 
 (def first-unused-arm (comp first unused-arms))
 
+(defn total-pulls
+  [arms]
+  (reduce + (map :pulls arms)))
+
 (defn bonus-value
   [total-pulls arm-pulls]
   (sqrt (/ (* 2 (Math/log total-pulls))
            arm-pulls)))
 
-(defn arm-ucb-value
-  [total-pulls arm]
-  (let [k (first (keys arm))
-        v (first (vals arm))]
-    {k (assoc v :ucb-value (+ (:value v)
-                              (bonus-value total-pulls (:n v))))}))
-
 (defn ucb-value
-  "adds ucb-value to each arm"
-  [arms]
-  (apply conj (map (partial arm-ucb-value (total-pulls arms)) (individual-maps arms))))
+  "adds ucb-value to arm"
+  [{:keys [value pulls] :as arm} arms]
+  (assoc arm :ucb-value (+ value
+                           (bonus-value (total-pulls arms)
+                                        pulls))))
 
-(defn pick-arm
+(defn select-arm
   [arms]
   (or (first-unused-arm arms)
-      (best-performing :ucb-value (ucb-value arms))))
+      (best-performing :ucb-value (map #(ucb-value % arms) arms))))
 
-(defn ucb-algorithm
-  [storage]
-  (reify BanditAlgorithm
-    (select-arm [_]
-      (pick-arm (get-arms storage)))
-    (update-reward [_ arm reward]
-      (put-arms storage #(update-arms reward arm %)))
-    (arms [_]
-      (get-arms storage))))

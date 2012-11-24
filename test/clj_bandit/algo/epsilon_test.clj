@@ -1,13 +1,13 @@
 (ns clj-bandit.algo.epsilon-test
   (:use [clojure.test]
-        [clj-bandit.bandit :only (mk-arm best-performing total-pulls)]
+        [clj-bandit.bandit :only (mk-arm best-performing total-pulls reward fold-arm)]
         [clj-bandit.storage :only (atom-storage)]
         [clj-bandit.algo.epsilon] :reload))
 
 (deftest best-performing-arm
   (is (= (mk-arm :arm2 :value 100)
-         (best-performing [(mk-arm :arm1 :value 1)
-                           (mk-arm :arm2 :value 100)]))))
+         (best-performing :value [(mk-arm :arm1 :value 1)
+                                  (mk-arm :arm2 :value 100)]))))
 
 (deftest calculating-total-pulls
   (is (= 101
