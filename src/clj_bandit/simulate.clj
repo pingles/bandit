@@ -1,6 +1,8 @@
 (ns clj-bandit.simulate
   (:import [java.util UUID])
-  (:use [clojure.string :only (join)]
+  (:use [clojure.data.csv :only (write-csv)]
+        [clojure.java.io :only (writer)]
+        [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
         [clj-bandit.arms :only (mk-arm fold-arm reward)])
   (:require [clj-bandit.algo.epsilon :as e]))
@@ -50,15 +52,20 @@
                     :result {:t 0
                              :cumulative-reward 0}})))
 
-(comment
-  (def bandit (mk-bernoulli-bandit :arm1 0.1
-                                   :arm2 0.1
-                                   :arm3 0.1
-                                   :arm4 0.1
-                                   :arm5 0.9))
-  (def epsilon 0.1)
-  (def arms (map mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5]))
-  (def some-results (->> arms
-                         (simulation-seq bandit (partial e/select-arm epsilon))
-                         (map :result)
-                         (take 20))))
+
+(defn- csv-row
+  [{:keys [t pulled reward cumulative-reward]}]
+  [t pulled reward cumulative-reward])
+
+(defn csv-simulate
+  []
+  (let [bandit (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
+        arms (map mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5])
+        epsilon 0.1
+        horizon 20]
+    (with-open [out-csv (writer "./tmp/results.csv")]
+      (write-csv out-csv (->> arms
+                              (simulation-seq bandit (partial e/select-arm epsilon))
+                              (map :result)
+                              (map csv-row)
+                              (take horizon))))))
