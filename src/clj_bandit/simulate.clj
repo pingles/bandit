@@ -19,8 +19,6 @@
                (partition 2 p))))
 
 
-;; (e/select-arm epsilon arms)
-
 (defn simulate
   "runs a simulation. bandit is a sequence of arms (functions) that
    return their numerical reward value.
@@ -32,7 +30,6 @@
         arm (get bandit selected-label)
         rwd (draw-arm arm)
         {:keys [cumulative-reward t]} results]
-    (println "Pulling" selected-label "for reward" rwd)
     {:arms (fold-arm (reward pull rwd) arms)
      :results {:pulled selected-label
                :reward rwd
