@@ -1,6 +1,11 @@
 (ns clj-bandit.algo.softmax
-  (:use [clj-bandit.core :only (cumulative-sum)]
-        [clj-bandit.arms :only (unpulled)]))
+  (:use [clj-bandit.arms :only (unpulled)]))
+
+(defn cumulative-sum
+  [coll]
+  (reduce (fn [v, x] (conj v (+ (last v) x)))
+          [(first coll)]
+          (rest coll)))
 
 (defn z
   [temperature values]

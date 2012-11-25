@@ -10,31 +10,7 @@ By keeping it small and simple we hope to make it far easier to integrate than e
 
 ## Usage
 
-Algorithms are defined in `clj-bandit.algo.xxx` namespaces. Algorithms are created with a set of arms and indicate the choices the algorithm has to optimise between.
-
-For example, to create an epsilon greedy algorithm with 4 arms:
-
-```clojure
-(ns casino.wynn
-  (:use [clj-bandit.core :only (mk-arms)]
-        [clj-bandit.storage :only (atom-storage)]
-        [clj-bandit.algo.epsilon :only (epsilon-greedy-algorithm)]))
-
-(def epsilon 0.1) ; epsilon indicates the percentage of time the algorithm
-                  ; will explore vs. exploit. the higher the value the more
-                  ; exploration
-
-(def algo (epsilon-greedy-algorithm 0.1 (atom-storage (mk-arms #{:arm1 :arm2 :arm3 :arm4}))))
-
-;; we can ask the algorithm which arm of the multi-armed bandit we should pull next:
-(select-arm algo)
-
-;; and indicate that we received a reward of 1
-(update-reward algo :arm1 1)
-
-;; or, that we received no reward
-(update-reward algo :arm1 0)
-```
+TODO: update
 
 ## Algorithms
 
