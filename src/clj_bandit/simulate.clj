@@ -14,9 +14,10 @@
 (defn mk-bernoulli-bandit
   "creates the simulation bandit: a map of labels to their arms (functions)"
   [& p]
-  (reduce merge
-          (map (fn [[label pct]] {label (bernoulli-arm pct)})
-               (partition 2 p))))
+  (->> p
+       (partition 2)
+       (map (fn [[label pct]] {label (bernoulli-arm pct)}))
+       (reduce merge)))
 
 
 (defn simulate
