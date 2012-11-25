@@ -37,8 +37,12 @@
                :cumulative-reward (+ cumulative-reward rwd)}}))
 
 (defn simulation-seq
-  "returns a sequence with results and arms throughout the run
-   of the test"
+  "returns an unbounded sequence with results and arms for a test run.
+   the number of items taken represents the horizon (or t) value.
+
+   example. run the algorithm against the bandit to horizon/t 20:
+
+   (take 20 (simulation-seq bandit (partial e/select-arm epsilon) arms))"
   [bandit selectfn arms]
   (drop 1 (iterate (partial simulate bandit selectfn)
                    {:arms arms
