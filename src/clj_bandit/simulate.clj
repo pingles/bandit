@@ -18,21 +18,35 @@
           (map (fn [[label pct]] {label (bernoulli-arm pct)})
                (partition 2 p))))
 
+
+;; (e/select-arm epsilon arms)
+
 (defn simulate
   "runs a simulation. bandit is a sequence of arms (functions) that
    return their numerical reward value.
+   selectfn: the algorithm function to select the arm. (f arms)
    arms: the initial arms map"
-  [bandit epsilon arms]
-  (let [pull (e/select-arm epsilon arms)
+  [bandit selectfn {:keys [arms results]}]
+  (let [pull (selectfn arms)
         selected-label (:name pull)
         arm (get bandit selected-label)
-        rwd (draw-arm arm)]
+        rwd (draw-arm arm)
+        {:keys [cumulative-reward t]} results]
     (println "Pulling" selected-label "for reward" rwd)
-    (fold-arm (reward pull rwd) arms)))
+    {:arms (fold-arm (reward pull rwd) arms)
+     :results {:pulled selected-label
+               :reward rwd
+               :t (inc t)
+               :cumulative-reward (+ cumulative-reward rwd)}}))
 
 (defn simulation-seq
-  [bandit epsilon arms]
-  (iterate (partial simulate bandit epsilon) arms))
+  "returns a sequence with results and arms throughout the run
+   of the test"
+  [bandit selectfn arms]
+  (drop 1 (iterate (partial simulate bandit selectfn)
+                   {:arms arms
+                    :results {:t 0
+                              :cumulative-reward 0}})))
 
 (comment
   (def bandit (mk-bernoulli-bandit :arm1 0.1
@@ -43,4 +57,4 @@
   (def epsilon 0.1)
   (def arms (map mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5]))
   (simulate bandit epsilon arms)
-  (def some-results (take 5 (simulation-seq bandit epsilon arms))))
+  (def some-results (take 20 (simulation-seq bandit (partial e/select-arm epsilon) arms))))
