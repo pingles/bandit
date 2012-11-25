@@ -7,8 +7,6 @@
   [arms]
   (filter (fn [{:keys [pulls]}] (zero? pulls)) arms))
 
-(def first-unused-arm (comp first unused-arms))
-
 (defn bonus-value
   [total-pulls arm-pulls]
   (sqrt (/ (* 2 (Math/log total-pulls))
@@ -23,7 +21,7 @@
 
 (defn select-arm
   [arms]
-  (or (first-unused-arm arms)
+  (or (first (unused-arms arms))
       (best-performing :ucb-value (map #(ucb-value % arms) arms))))
 
 (comment
