@@ -25,14 +25,14 @@
    return their numerical reward value.
    selectfn: the algorithm function to select the arm. (f arms)
    arms: the initial arms map"
-  [bandit selectfn {:keys [arms results]}]
+  [bandit selectfn {:keys [arms result]}]
   (let [pull (selectfn arms)
         selected-label (:name pull)
         arm (get bandit selected-label)
         rwd (draw-arm arm)
-        {:keys [cumulative-reward t]} results]
+        {:keys [cumulative-reward t]} result]
     {:arms (fold-arm (reward pull rwd) arms)
-     :results {:pulled selected-label
+     :result {:pulled selected-label
                :reward rwd
                :t (inc t)
                :cumulative-reward (+ cumulative-reward rwd)}}))
@@ -47,8 +47,8 @@
   [bandit selectfn arms]
   (drop 1 (iterate (partial simulate bandit selectfn)
                    {:arms arms
-                    :results {:t 0
-                              :cumulative-reward 0}})))
+                    :result {:t 0
+                             :cumulative-reward 0}})))
 
 (comment
   (def bandit (mk-bernoulli-bandit :arm1 0.1
@@ -58,5 +58,7 @@
                                    :arm5 0.9))
   (def epsilon 0.1)
   (def arms (map mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5]))
-  (simulate bandit epsilon arms)
-  (def some-results (take 20 (simulation-seq bandit (partial e/select-arm epsilon) arms))))
+  (def some-results (->> arms
+                         (simulation-seq bandit (partial e/select-arm epsilon))
+                         (map :result)
+                         (take 20))))
