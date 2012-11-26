@@ -30,9 +30,9 @@
         arms (map #(assoc %1 :p %2) arms probs)]
     (map #(assoc %1 :cumulative-p %2) arms (cumulative-sum probs))))
 
-(defn select-draw
+(defn select-arm
   ([temperature arms]
-     (select-draw (rand) arms))
+     (select-arm (rand) arms))
   ([temperature rand-val arms]
      (or (first (unpulled arms))
          (first (filter (fn [{:keys [cumulative-p]}]

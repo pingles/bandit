@@ -28,17 +28,17 @@
 (deftest selecting-arms
   (testing "before every arm"
     (is (= (mk-arm :arm1)
-           (select-draw 1 1 [(mk-arm :arm1)
+           (select-arm 1 1 [(mk-arm :arm1)
                              (mk-arm :arm2)])))
     (is (= (mk-arm :arm2)
-           (select-draw 1 1 [(mk-arm :arm1 :pulls 1)
+           (select-arm 1 1 [(mk-arm :arm1 :pulls 1)
                              (mk-arm :arm2)]))))
   (testing "after every arm has been pulled"
     (let [arms [(mk-arm :arm1 :cumulative-p 0.1 :pulls 10)
                 (mk-arm :arm2 :cumulative-p 0.9 :pulls 10)]]
       (is (= (mk-arm :arm1 :p 0.5 :cumulative-p 0.5 :pulls 10)
-             (select-draw 1 0.05 arms)))
+             (select-arm 1 0.05 arms)))
       (is (= (mk-arm :arm2 :p 0.5 :cumulative-p 1.0 :pulls 10)
-             (select-draw 1 0.91 arms)))
+             (select-arm 1 0.91 arms)))
       (is (= (mk-arm :arm2 :cumulative-p 0.9 :pulls 10)
-             (select-draw 1 100 arms))))))
+             (select-arm 1 100 arms))))))
