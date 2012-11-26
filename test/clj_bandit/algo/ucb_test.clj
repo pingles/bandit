@@ -1,12 +1,12 @@
 (ns clj-bandit.algo.ucb_test
   (:use [clojure.test]
-        [clj-bandit.arms :only (mk-arm best-performing)]
+        [clj-bandit.arms :only (mk-arm best-performing unpulled)]
         [clj-bandit.algo.ucb] :reload))
 
 (deftest picks-unpulled-arms
   (is (= [(mk-arm :arm1)]
-         (unused-arms [(mk-arm :arm1) (mk-arm :arm2 :pulls 2)])))
-  (is (nil? (first (unused-arms [(mk-arm :arm1 :pulls 1)])))))
+         (unpulled [(mk-arm :arm1) (mk-arm :arm2 :pulls 2)])))
+  (is (nil? (first (unpulled [(mk-arm :arm1 :pulls 1)])))))
 
 (deftest finding-best-performing
   (is (= (mk-arm :arm2 :ucb-value 100)

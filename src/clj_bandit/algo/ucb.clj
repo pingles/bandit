@@ -1,10 +1,6 @@
 (ns clj-bandit.algo.ucb
-  (:use [clj-bandit.arms :only (best-performing total-pulls)]
+  (:use [clj-bandit.arms :only (best-performing unpulled total-pulls)]
         [clojure.math.numeric-tower :only (sqrt)]))
-
-(defn unused-arms
-  [arms]
-  (filter (fn [{:keys [pulls]}] (zero? pulls)) arms))
 
 (defn bonus-value
   [total-pulls arm-pulls]
@@ -20,5 +16,5 @@
 
 (defn select-arm
   [arms]
-  (or (first (unused-arms arms))
+  (or (first (unpulled arms))
       (best-performing :ucb-value (map #(ucb-value % arms) arms))))
