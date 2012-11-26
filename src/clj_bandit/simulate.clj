@@ -58,14 +58,18 @@
   [t pulled reward cumulative-reward])
 
 (defn csv-simulate
-  []
+  [simulations]
   (let [bandit (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
         arms (map mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5])
         epsilon 0.1
-        horizon 20]
-    (with-open [out-csv (writer "./tmp/results.csv")]
-      (write-csv out-csv (->> arms
-                              (simulation-seq bandit (partial e/select-arm epsilon))
-                              (map :result)
-                              (map csv-row)
-                              (take horizon))))))
+        horizon 1000]
+    (letfn [(simulationfn [algorithm]
+              (->> arms
+                   (simulation-seq bandit algorithm)
+                   (map :result)
+                   (map csv-row)
+                   (take horizon)))]
+      (with-open [out-csv (writer "./tmp/results.csv")]
+        (write-csv out-csv (apply concat
+                                  (repeatedly simulations
+                                              #(simulationfn (partial e/select-arm epsilon)))))))))
