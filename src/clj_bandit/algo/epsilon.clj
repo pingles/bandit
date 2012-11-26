@@ -20,10 +20,3 @@
 (defmethod select-arm false
   [annealfn arms]
   (draw-arm (annealfn (total-pulls arms)) arms))
-
-(comment
-  (def arms (map mk-arm [:arm1 :arm2 :arm3]))
-  (def selected-arm (select-arm 0.1 arms))
-  (select-arm 0.1 (fold-arm (reward selected-arm 1) arms)))
-
-
