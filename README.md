@@ -10,7 +10,29 @@ By keeping it small and simple we hope to make it far easier to integrate than e
 
 ## Usage
 
-TODO: update
+```clojure
+(ns casino.wynn
+  (:require [clj-bandit.arms :as a]
+            [clj-bandit.algo.epsilon :as e]))
+
+;; arms represents the knowledge the algorithm acquires- using clj-bandit.Arm records
+(def arms (map a/mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5]))
+
+;; which arm should we pull?
+(def pull (let [epsilon 0.1]
+            (e/select-arm epsilon arms)))
+
+;; it told us to pull :arm5
+;; casino.wynn> pull
+;;#clj_bandit.arms.Arm{:name :arm5, :pulls 0, :value 0}
+
+;; let's update the arms to record our payout from :arm5
+;; this becomes the next arms state we pass in to e/select-arm
+;; we can use 1.0 to indicate we were paid, and 0 to indicate
+;; we weren't
+(fold-arm (reward pull 1.0) arms)
+
+```
 
 ## Algorithms
 
