@@ -57,7 +57,7 @@
   [label {:keys [t pulled reward cumulative-reward]}]
   (concat label [t pulled reward cumulative-reward]))
 
-(defn csv-simulate
+(defn simulations
   [simulations]
   (let [bandit (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
         arms (map mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5])
@@ -69,7 +69,11 @@
                    (map :result)
                    (map (partial csv-row algo-label))
                    (take horizon)))]
-      (with-open [out-csv (writer "./tmp/results.csv")]
-        (write-csv out-csv (apply concat
-                                  (repeatedly simulations
-                                              #(simulationfn [:epsilon-greedy epsilon] (partial e/select-arm epsilon)))))))))
+      (apply concat
+             (repeatedly simulations
+                         #(simulationfn [:epsilon-greedy epsilon] (partial e/select-arm epsilon)))))))
+
+(defn csv-simulate
+  [num-simulations]
+  (with-open [out-csv (writer "./tmp/results.csv")]
+    (write-csv out-csv (simulations num-simulations))))
