@@ -1,4 +1,4 @@
-(defproject clj-bandit "0.1.0-SNAPSHOT"
+(defproject clj-bandit "0.1.0"
   :description "Multi-armed bandit algorithms"
   :url "http://github.com/pingles/clj-bandit"
   :license {:name "Eclipse Public License"
