@@ -10,3 +10,4 @@ pom.xml
 .lein-plugins
 /tmp
 .DS_Store
+docs/**
