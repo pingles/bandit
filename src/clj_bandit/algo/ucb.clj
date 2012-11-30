@@ -1,4 +1,6 @@
-(ns clj-bandit.algo.ucb
+(ns ^{:doc "Upper Confidence Bound algorithm"
+      :author "Paul Ingles"}
+  clj-bandit.algo.ucb
   (:use [clj-bandit.arms :only (best-performing unpulled total-pulls)]
         [clojure.math.numeric-tower :only (sqrt)]))
 
@@ -8,7 +10,6 @@
            arm-pulls)))
 
 (defn ucb-value
-  "adds ucb-value to arm"
   [{:keys [value pulls] :as arm} arms]
   (assoc arm :ucb-value (+ value
                            (bonus-value (total-pulls arms)

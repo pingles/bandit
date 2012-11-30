@@ -1,4 +1,6 @@
-(ns clj-bandit.arms)
+(ns ^{:doc "Arms are used to track the performance of a bandit for the algorithm."
+      :author "Paul Ingles"}
+  clj-bandit.arms)
 
 (defrecord Arm [name pulls value])
 
@@ -17,6 +19,7 @@
   (filter #(zero? (:pulls %)) arms))
 
 (defn best-performing
+  "identifies the arm with the highest value for (k arm)"
   [k arms]
   (apply max-key k arms))
 
@@ -28,7 +31,7 @@
         reward)))
 
 (defn reward
-  "returns the arm, with an update n and reward calculation."
+  "updates the arm given a reward (numeric value)"
   [{:keys [pulls value] :as arm} reward]
   (let [u (assoc arm :pulls (inc pulls))]
     (if (zero? pulls)
@@ -36,7 +39,7 @@
       (assoc u :value (weighted-value pulls value reward)))))
 
 (defn fold-arm
-  "returns arms with the data for arm folded in."
+  "merges the updated arm back into the arms vector"
   [{:keys [name] :as arm} arms]
   (conj (remove (fn [x] (= name (:name x)))
                 arms)

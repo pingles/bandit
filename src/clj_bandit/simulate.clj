@@ -1,4 +1,6 @@
-(ns clj-bandit.simulate
+(ns ^{:doc "Some functions to help test the algorithms using a monte carlo simulation."
+      :author "Paul Ingles"}
+  clj-bandit.simulate
   (:import [java.util UUID])
   (:use [clojure.data.csv :only (write-csv)]
         [clojure.java.io :only (writer)]
@@ -9,7 +11,14 @@
 
 (set! *warn-on-reflection* true)
 
-(defn bernoulli-arm [p] (fn [] (if (> (rand) p) 0 1)))
+(defn bernoulli-arm
+  "creates a function representing the bandit arm. uses a fixed
+   probability p of reward. p of 0.1 would reward ~10% of the time."
+  [p]
+  (fn []
+    (if (> (rand) p)
+      0
+      1)))
 
 (defn draw-arm [f] (f))
 
@@ -43,7 +52,7 @@
   "returns an unbounded sequence with results and arms for a test run.
    the number of items taken represents the horizon (or t) value.
 
-   example. run the algorithm against the bandit to horizon/t 20:
+   example: to run the algorithm against the bandit to horizon 20:
 
    (take 20 (simulation-seq bandit (partial e/select-arm epsilon) arms))"
   [bandit selectfn arms]
@@ -74,6 +83,6 @@
                          #(simulationfn [:epsilon-greedy epsilon] (partial e/select-arm epsilon)))))))
 
 (defn csv-simulate
-  [num-simulations]
-  (with-open [out-csv (writer "./tmp/results.csv")]
+  [file-path num-simulations]
+  (with-open [out-csv (writer file-path)]
     (write-csv out-csv (simulations num-simulations))))

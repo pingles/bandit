@@ -1,7 +1,9 @@
-(ns clj-bandit.algo.epsilon
+(ns ^{:doc "Epsilon-Greedy algorithm"
+      :author "Paul Ingles"}
+  clj-bandit.algo.epsilon
   (:use [clj-bandit.arms :only (best-performing total-pulls)]))
 
-(defn draw-arm
+(defn- draw-arm
   ([epsilon arms]
      (draw-arm epsilon (rand) arms))
   ([epsilon n arms]
@@ -9,9 +11,12 @@
        (best-performing :value arms)
        (rand-nth (seq arms)))))
 
-;; stuff needed to operate the bandit:
-
-(defmulti select-arm (fn [epsilon arms] (number? epsilon)))
+(defmulti select-arm
+  "returns the arm that should be pulled. can provide an epsilon value: a number
+   indicating the algorithms propensity for exploration. alternatively, provide
+   an annealing function that will be called with the number of pulls; allowing the
+   algorithm to dampen its exploration over time. 0 < epsilon < 1."
+  (fn [epsilon arms] (number? epsilon)))
 
 (defmethod select-arm true
   [epsilon arms]

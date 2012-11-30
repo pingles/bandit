@@ -1,4 +1,6 @@
-(ns clj-bandit.algo.softmax
+(ns ^{:doc "Softmax algorithm"
+      :author "Paul Ingles"}
+  clj-bandit.algo.softmax
   (:use [clj-bandit.arms :only (unpulled)]))
 
 (defn cumulative-sum
@@ -24,13 +26,14 @@
     (p temperature zval value)))
 
 (defn probabilities
-  "adds softmax p values to arms"
   [temperature arms]
   (let [probs (map #(probability temperature % arms) arms)
         arms (map #(assoc %1 :p %2) arms probs)]
     (map #(assoc %1 :cumulative-p %2) arms (cumulative-sum probs))))
 
 (defn select-arm
+  "selects the arm to pull. a higher temperature causes the algorithm to
+   favour experimentation. 0 < temperature < 1."
   ([temperature arms]
      (select-arm (rand) arms))
   ([temperature rand-val arms]
