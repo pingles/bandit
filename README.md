@@ -30,7 +30,7 @@ By keeping it small and simple we hope to make it far easier to integrate than e
 ;; this becomes the next arms state we pass in to e/select-arm
 ;; we can use 1.0 to indicate we were paid, and 0 to indicate
 ;; we weren't
-(fold-arm (reward pull 1.0) arms)
+(a/fold-arm (a/reward pull 1.0) arms)
 
 ```
 
