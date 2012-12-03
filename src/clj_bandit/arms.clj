@@ -32,7 +32,7 @@
 
 (defn reward
   "updates the arm given a reward (numeric value)"
-  [{:keys [pulls value] :as arm} reward]
+  [{:keys [pulls] :as arm} reward]
   (let [u (assoc arm :pulls (inc pulls))]
     (if (zero? pulls)
       (assoc u :value reward)
