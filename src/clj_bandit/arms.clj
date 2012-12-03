@@ -24,10 +24,10 @@
   (apply max-key k arms))
 
 (defn weighted-value
-  [n value reward]
-  (+ (* (/ (dec n) n)
+  [{:keys [pulls value] :as arm} reward]
+  (+ (* (/ (dec pulls) pulls)
         value)
-     (* (/ 1 n)
+     (* (/ 1 pulls)
         reward)))
 
 (defn reward
@@ -36,7 +36,7 @@
   (let [u (assoc arm :pulls (inc pulls))]
     (if (zero? pulls)
       (assoc u :value reward)
-      (assoc u :value (weighted-value pulls value reward)))))
+      (assoc u :value (weighted-value arm reward)))))
 
 (defn fold-arm
   "merges the updated arm back into the arms vector"
