@@ -8,6 +8,14 @@ This library aims to be simple; it concerns itself with multi-armed bandit optim
 
 By keeping it small and simple we hope to make it far easier to integrate than existing tools.
 
+[![Build Status](https://secure.travis-ci.org/pingles/clj-bandit.png)](http://travis-ci.org/pingles/clj-bandit)
+
+## Dependency
+
+The library is hosted on [Clojars](http://clojars.org) so you can add the following to your `project.clj`:
+
+    :dependencies [[clj-bandit "0.1.0"]]
+
 ## Usage
 
 ```clojure
