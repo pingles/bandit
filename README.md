@@ -57,7 +57,7 @@ As per the book, the following algorithms have been implemented so far:
 
 ## Performance
 
-["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using `clj-bandit.simulate/run-simulation`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
+["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using functions from `clj-bandit.simulate`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
 
 In the plots below, `algo.variant` can refer to either a "standard" or "annealing" algorithm (annealing applies a factor that causes the algorithm to explore less as it gains more experience). For "standard" algorithms, `algo.parameter` represents the temperature or epsilon value used to tune the algorithms tendency to explore.
 
