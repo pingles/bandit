@@ -1,7 +1,6 @@
 (ns ^{:doc "Some functions to help test the algorithms using a monte carlo simulation."
       :author "Paul Ingles"}
   clj-bandit.simulate
-  (:import [java.util UUID])
   (:use [clojure.data.csv :only (write-csv)]
         [clojure.java.io :only (writer)]
         [clojure.string :only (join)]
