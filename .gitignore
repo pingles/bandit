@@ -12,3 +12,4 @@ pom.xml
 /tmp
 .DS_Store
 docs/**
+target/
