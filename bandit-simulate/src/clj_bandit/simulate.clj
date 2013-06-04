@@ -5,8 +5,10 @@
         [clojure.java.io :only (writer)]
         [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
-        [clj-bandit.arms :only (mk-arm fold-arm reward)])
-  (:require [clj-bandit.algo.epsilon :as e]))
+        [clj-bandit.arms :only (mk-arm fold-arm reward)]
+        [clojure.tools.cli :only (cli)])
+  (:require [clj-bandit.algo.epsilon :as e])
+  (:gen-class))
 
 (set! *warn-on-reflection* true)
 
@@ -85,3 +87,17 @@
   [file-path num-simulations]
   (with-open [out-csv (writer file-path)]
     (write-csv out-csv (simulations num-simulations))))
+
+(defn -main
+  [& args]
+  (let [[options args banner] (cli args
+                                   ["-o" "--output" "File path to write CSV results data to" :default "results.csv"]
+                                   ["-n" "--simulations" "Number of monte-carlo simulations to execute" :default 10]
+                                   ["-h" "--help" "Display this"])]
+    (when (:help options)
+      (println banner)
+      (System/exit 0))
+    (let [{:keys [output simulations]} options]
+      (println "Starting simulations ...")
+      (csv-simulate output simulations)
+      (println "Completed simulations. Results in" output))))
