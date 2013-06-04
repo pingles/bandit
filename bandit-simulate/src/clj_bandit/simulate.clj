@@ -64,40 +64,44 @@
 
 
 (defn- csv-row
-  [label {:keys [t pulled reward cumulative-reward]}]
-  (concat label [t pulled reward cumulative-reward]))
+  [{:keys [algo-label t pulled reward cumulative-reward]}]
+  (concat algo-label [t pulled reward cumulative-reward]))
 
 (defn simulations
+  "Produces a sequence of simulations that execute to the specified time horizon. "
   [simulations]
   (let [bandit (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
         arms (map mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5])
-        epsilon 0.1
-        horizon 1000]
+        epsilon 0.1]
     (letfn [(simulationfn [algo-label algorithm]
               (->> arms
-                   (simulation-seq bandit algorithm)
+                   (simulation-seq bandit algorithm) 
                    (map :result)
-                   (map (partial csv-row algo-label))
-                   (take horizon)))]
-      (apply concat
-             (repeatedly simulations
-                         #(simulationfn [:epsilon-greedy epsilon] (partial e/select-arm epsilon)))))))
-
-(defn csv-simulate
-  [file-path num-simulations]
-  (with-open [out-csv (writer file-path)]
-    (write-csv out-csv (simulations num-simulations))))
+                   (map #(assoc % :algo-label algo-label))))]
+      (repeatedly simulations
+                  #(simulationfn [:epsilon-greedy epsilon] (partial e/select-arm epsilon))))))
 
 (defn -main
   [& args]
   (let [[options args banner] (cli args
                                    ["-o" "--output" "File path to write CSV results data to" :default "results.csv"]
-                                   ["-n" "--simulations" "Number of monte-carlo simulations to execute" :default 10]
+                                   ["-n" "--num-simulations" "Number of monte-carlo simulations to execute" :default 10]
+                                   ["-t" "--time" "Time horizon to run test to" :default 1000]
                                    ["-h" "--help" "Display this"])]
     (when (:help options)
       (println banner)
       (System/exit 0))
-    (let [{:keys [output simulations]} options]
+    (let [{:keys [output num-simulations time]} options]
       (println "Starting simulations ...")
-      (csv-simulate output simulations)
+      (with-open [out-csv (writer output)]
+        ;; we map across the set of n simulations, taking results to
+        ;; horizon t and then coverting the result to a csv row. these
+        ;; are then concat'ed together to provide the sequence for
+        ;; writing to the csv.
+        ;; TODO
+        ;; produce the summary statistics across n simulations at
+        ;; point t to reduce volume of data being written at each t.
+        (write-csv out-csv (apply concat (map (comp (partial map csv-row)
+                                                    (partial take time))
+                                              (simulations num-simulations)))))
       (println "Completed simulations. Results in" output))))
