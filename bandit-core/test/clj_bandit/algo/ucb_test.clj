@@ -1,32 +1,30 @@
 (ns clj-bandit.algo.ucb_test
-  (:use [clojure.test]
+  (:use [expectations]
         [clj-bandit.arms :only (mk-arm best-performing unpulled)]
-        [clj-bandit.algo.ucb] :reload))
+        [clj-bandit.algo.ucb]))
 
-(deftest picks-unpulled-arms
-  (is (= [(mk-arm :arm1)]
-         (unpulled [(mk-arm :arm1) (mk-arm :arm2 :pulls 2)])))
-  (is (nil? (first (unpulled [(mk-arm :arm1 :pulls 1)])))))
+;; picking unpulled arms
+(expect 2 (count (unpulled [(mk-arm :arm1) (mk-arm :arm2)])))
+(expect empty? (unpulled [(mk-arm :arm1 :pulls 1)]))
 
-(deftest finding-best-performing
-  (is (= (mk-arm :arm2 :ucb-value 100)
-         (best-performing :ucb-value [(mk-arm :arm1 :ucb-value 0)
-                                      (mk-arm :arm2 :ucb-value 100)]))))
+;; selecting best performing
+(expect (mk-arm :arm1 :ucb-value 1)
+        (best-performing :ucb-value [(mk-arm :arm1 :ucb-value 1) (mk-arm :arm2 :ucb-value 0)]))
 
-(deftest ucb-bonus-val
-  (is (= 1.2389740629499462
-         (bonus-value 10 3))))
+;; ucb bonus values
+(expect 1.2389740629499462 (bonus-value 10 3))
+(given (ucb-value (mk-arm :arm1 :pulls 1)
+                  [(mk-arm :arm1 :pulls 1) (mk-arm :arm2 :pulls 2)])
+       (expect :name :arm1
+               :pulls 1
+               :ucb-value 1.4823038073675112))
 
-(deftest conj-ucb-value
-  (is (= 2.189929347170073
-         (:ucb-value (ucb-value (mk-arm :arm1 :pulls 1)
-                                [(mk-arm :arm1 :pulls 1)
-                                 (mk-arm :arm1 :pulls 10)])))))
+;; selecting arms
+(given (select-arm [(mk-arm :arm1) (mk-arm :arm2 :pulls 1)])
+       (expect :name :arm1))
+(given (select-arm [(mk-arm :arm1 :pulls 1 :value 1)
+                    (mk-arm :arm2 :pulls 10 :value 10)])
+       (expect :name :arm2
+               :pulls 10
+               :ucb-value 10.692516465190305))
 
-(deftest selecting-arm
-  (is (= (mk-arm :arm1)
-         (select-arm [(mk-arm :arm1)
-                      (mk-arm :arm2 :value 10 :pulls 10)])))
-  (is (= (mk-arm :arm2 :pulls 10 :value 10 :ucb-value 10.692516465190305)
-         (select-arm [(mk-arm :arm1 :pulls 1 :value 1)
-                      (mk-arm :arm2 :pulls 10 :value 10)]))))
