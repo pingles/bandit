@@ -1,4 +1,4 @@
-(ns clj-bandit.arms_test
+(ns clj-bandit.arms-test
   (:use [expectations]
         [clj-bandit.arms]))
 

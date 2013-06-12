@@ -10,6 +10,11 @@
   ([name & keyvals]
      (apply assoc (mk-arm name) keyvals)))
 
+(defn mk-arms
+  [& names]
+  (apply sorted-map  (interleave names
+                                 (map mk-arm names))))
+
 (defn total-pulls
   [arms]
   (reduce + (map :pulls arms)))
