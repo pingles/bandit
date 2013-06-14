@@ -35,8 +35,9 @@
 (defn simulate
   "runs a simulation. bandit is a sequence of arms (functions) that
    return their numerical reward value.
+   bandit: the multi-armed machine we're optimising against
    selectfn: the algorithm function to select the arm. (f arms)
-   arms: the initial arms map"
+   arms: current algorithm state"
   [bandit selectfn {:keys [arms result]}]
   (let [pull (selectfn (vals arms))
         selected-label (:name pull)
@@ -45,9 +46,9 @@
         {:keys [cumulative-reward t]} result]
     {:arms (update (reward pull rwd) arms)
      :result {:pulled selected-label
-               :reward rwd
-               :t (inc t)
-               :cumulative-reward (+ cumulative-reward rwd)}}))
+              :reward rwd
+              :t (inc t)
+              :cumulative-reward (+ cumulative-reward rwd)}}))
 
 (defn simulation-seq
   "returns an unbounded sequence with results and arms for a test run.
@@ -57,10 +58,10 @@
 
    (take 20 (simulation-seq bandit (partial e/select-arm epsilon) arms))"
   [bandit selectfn arms]
-  (drop 1 (iterate (partial simulate bandit selectfn)
-                   {:arms arms
-                    :result {:t 0
-                             :cumulative-reward 0}})))
+  (rest (iterate (partial simulate bandit selectfn)
+                 {:arms arms
+                  :result {:t 0
+                           :cumulative-reward 0}})))
 
 
 (defn- csv-row
