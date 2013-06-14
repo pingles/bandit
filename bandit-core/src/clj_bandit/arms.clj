@@ -12,8 +12,8 @@
 
 (defn mk-arms
   [& names]
-  (apply sorted-map  (interleave names
-                                 (map mk-arm names))))
+  (apply sorted-map (interleave names
+                                (map mk-arm names))))
 
 (defn total-pulls
   [arms]

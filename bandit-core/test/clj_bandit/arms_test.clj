@@ -2,6 +2,13 @@
   (:use [expectations]
         [clj-bandit.arms]))
 
+
+;; tracking arm reward
+(given (-> (mk-arm :arm1) (reward 0) (reward 1))
+       (expect :name :arm1
+               :value 1
+               :pulls 2))
+
 ;; finding unpulled arms
 (expect empty? (unpulled [(mk-arm :arm1 :pulls 1)]))
 (expect [(mk-arm :arm1)] (unpulled [(mk-arm :arm1) (mk-arm :arm2 :pulls 1)]))
@@ -22,3 +29,4 @@
 (expect [(mk-arm :arm1 :pulls 1) (mk-arm :arm2)]
         (fold-arm (mk-arm :arm1 :pulls 1)
                   [(mk-arm :arm1) (mk-arm :arm2)]))
+
