@@ -11,6 +11,7 @@
      (apply assoc (mk-arm name) keyvals)))
 
 (defn mk-arms
+  "Creates a sorted map to hold onto the state of arms"
   [& names]
   (apply sorted-map (interleave names
                                 (map mk-arm names))))
@@ -43,10 +44,7 @@
       (assoc u :value reward)
       (assoc u :value (weighted-value arm reward)))))
 
-(defn fold-arm
-  "merges the updated arm back into the arms vector"
+(defn update
+  "merges the updated arm back into arms"
   [{:keys [name] :as arm} arms]
-  (conj (remove (fn [x] (= name (:name x)))
-                arms)
-        arm))
-
+  (assoc arms name arm))

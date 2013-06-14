@@ -2,6 +2,11 @@
   (:use [expectations]
         [clj-bandit.arms]))
 
+;; making arms
+(given (mk-arms :arm1 :arm2 :arm3)
+       (expect count 3
+               :arm1 (mk-arm :arm1 :pulls 0 :value 0)
+               vals [(mk-arm :arm1) (mk-arm :arm2) (mk-arm :arm3)]))
 
 ;; tracking arm reward
 (given (-> (mk-arm :arm1) (reward 0) (reward 1))
@@ -26,7 +31,7 @@
 (expect 2/3 (weighted-value (mk-arm :arm1 :pulls 3 :value 1) 0))
 
 ;; folding arm results
-(expect [(mk-arm :arm1 :pulls 1) (mk-arm :arm2)]
-        (fold-arm (mk-arm :arm1 :pulls 1)
-                  [(mk-arm :arm1) (mk-arm :arm2)]))
+(expect [(mk-arm :arm1 :pulls 1 :value 1) (mk-arm :arm2)]
+        (vals (update (reward (mk-arm :arm1) 1)
+                      (mk-arms :arm1 :arm2))))
 

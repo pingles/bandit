@@ -5,7 +5,7 @@
         [clojure.java.io :only (writer)]
         [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
-        [clj-bandit.arms :only (mk-arm fold-arm reward)]
+        [clj-bandit.arms :only (mk-arms update reward)]
         [clojure.tools.cli :only (cli)])
   (:require [clj-bandit.algo.epsilon :as e])
   (:gen-class))
@@ -38,12 +38,12 @@
    selectfn: the algorithm function to select the arm. (f arms)
    arms: the initial arms map"
   [bandit selectfn {:keys [arms result]}]
-  (let [pull (selectfn arms)
+  (let [pull (selectfn (vals arms))
         selected-label (:name pull)
         arm (get bandit selected-label)
         rwd (draw-arm arm)
         {:keys [cumulative-reward t]} result]
-    {:arms (fold-arm (reward pull rwd) arms)
+    {:arms (update (reward pull rwd) arms)
      :result {:pulled selected-label
                :reward rwd
                :t (inc t)
@@ -71,7 +71,7 @@
   "Produces a sequence of simulations that execute to the specified time horizon. "
   [simulations]
   (let [bandit (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
-        arms (map mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5])
+        arms (mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)
         epsilon 0.1]
     (letfn [(simulationfn [algo-label algorithm]
               (->> arms
@@ -94,13 +94,6 @@
     (let [{:keys [output num-simulations time]} options]
       (println "Starting simulations ...")
       (with-open [out-csv (writer output)]
-        ;; we map across the set of n simulations, taking results to
-        ;; horizon t and then coverting the result to a csv row. these
-        ;; are then concat'ed together to provide the sequence for
-        ;; writing to the csv.
-        ;; TODO
-        ;; produce the summary statistics across n simulations at
-        ;; point t to reduce volume of data being written at each t.
         (write-csv out-csv (apply concat (map (comp (partial map csv-row)
                                                     (partial take time))
                                               (simulations num-simulations)))))

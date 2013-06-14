@@ -25,15 +25,16 @@ The library is hosted on [Clojars](http://clojars.org) so you can add the follow
   (:require [clj-bandit.arms :as a]
             [clj-bandit.algo.epsilon :as e]))
 
-;; arms represents the knowledge the algorithm acquires- using clj-bandit.Arm records
-(def arms (map a/mk-arm [:arm1 :arm2 :arm3 :arm4 :arm5]))
+;; arms represents the knowledge the algorithm acquires. 
+;; a sorted map of clj-bandit.Arm records
+(def arms (a/mk-arms :arm1 :arm2 :arm3 :arm4 :arm5))
 
 (def epsilon 0.1)
 
 (def algo-select (partial e/select-arm epsilon))
 
 ;; which arm should we pull?
-(def arm (algo-select arms))
+(def arm (algo-select (vals arms)))
 
 ;; it told us to pull :arm5
 ;; casino.wynn> arm
