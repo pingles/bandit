@@ -69,8 +69,8 @@
   (concat algo-label [t pulled reward cumulative-reward]))
 
 (defn simulations
-  "Produces a sequence of simulations that execute to the specified time horizon. "
-  [simulations]
+  "Produces a sequence of n simulations"
+  [n]
   (let [bandit (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
         arms (mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)
         epsilon 0.1]
