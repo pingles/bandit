@@ -79,7 +79,7 @@
                    (simulation-seq bandit algorithm) 
                    (map :result)
                    (map #(assoc % :algo-label algo-label))))]
-      (repeatedly simulations
+      (repeatedly n
                   #(simulationfn [:epsilon-greedy epsilon] (partial e/select-arm epsilon))))))
 
 (defn -main
