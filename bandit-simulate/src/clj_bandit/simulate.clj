@@ -7,10 +7,8 @@
         [clojure.java.io :only (writer)]
         [clj-bandit.arms :only (mk-arms update reward)]
         [clojure.tools.cli :only (cli)])
-  (:require [clj-bandit.algo.epsilon :as e])
+  (:require [clj-bandit.algo.epsilon :as eps])
   (:gen-class))
-
-(set! *warn-on-reflection* true)
 
 (defn bernoulli-arm
   "creates a function representing the bandit arm. uses a fixed
@@ -30,6 +28,9 @@
        (partition 2)
        (map (fn [[label pct]] {label (bernoulli-arm pct)}))
        (reduce merge)))
+
+
+
 
 
 (defn simulate
@@ -56,31 +57,29 @@
 
    example: to run the algorithm against the bandit to horizon 20:
 
-   (take 20 (simulation-seq bandit (partial e/select-arm epsilon) arms))"
+   (take 20 (simulation-seq bandit (partial eps/select-arm epsilon) arms))"
   [bandit selectfn arms]
   (rest (iterate (partial simulate bandit selectfn)
                  {:arms arms
                   :result {:t 0
                            :cumulative-reward 0}})))
 
-
-(defn- csv-row
-  [{:keys [algo-label t pulled reward cumulative-reward]}]
-  (concat algo-label [t pulled reward cumulative-reward]))
-
 (defn simulations
-  "Produces a sequence of n simulations"
+  "Produces a sequence of n simulations."
   [n]
   (let [bandit (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
         arms (mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)
-        epsilon 0.1]
-    (letfn [(simulationfn [algo-label algorithm]
+        epsilon 0.1
+        algorithm (partial eps/select-arm epsilon)]
+    (letfn [(simulationfn []
               (->> arms
                    (simulation-seq bandit algorithm) 
-                   (map :result)
-                   (map #(assoc % :algo-label algo-label))))]
-      (repeatedly n
-                  #(simulationfn [:epsilon-greedy epsilon] (partial e/select-arm epsilon))))))
+                   (map :result)))]
+      (repeatedly n simulationfn))))
+
+(defn- csv-row
+  [{:keys [t pulled reward cumulative-reward]}]
+  [t pulled reward cumulative-reward])
 
 (defn -main
   [& args]
