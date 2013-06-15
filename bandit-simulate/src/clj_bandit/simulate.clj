@@ -94,7 +94,7 @@
     (let [{:keys [output num-simulations time]} options]
       (println "Starting simulations ...")
       (with-open [out-csv (writer output)]
-        (write-csv out-csv (apply concat (map (comp (partial map csv-row)
-                                                    (partial take time))
-                                              (simulations num-simulations)))))
+        (write-csv out-csv (mapcat (comp (partial map csv-row)
+                                         (partial take (Integer/valueOf time)))
+                                   (simulations (Integer/valueOf num-simulations)))))
       (println "Completed simulations. Results in" output))))
