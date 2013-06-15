@@ -19,7 +19,7 @@
 (expect [(mk-arm :arm1)] (unpulled [(mk-arm :arm1) (mk-arm :arm2 :pulls 1)]))
 
 ;; finding best value
-(expect (mk-arm :arm1 :value 10) (best-performing :value [(mk-arm :arm1 :value 10)
+(expect (mk-arm :arm1 :value 10) (exploit :value [(mk-arm :arm1 :value 10)
                                                           (mk-arm :arm2)]))
 
 ;; total pulls

@@ -1,6 +1,6 @@
 (ns clj-bandit.algo.ucb_test
   (:use [expectations]
-        [clj-bandit.arms :only (mk-arm best-performing unpulled)]
+        [clj-bandit.arms :only (mk-arm exploit unpulled)]
         [clj-bandit.algo.ucb]))
 
 ;; picking unpulled arms
@@ -9,7 +9,7 @@
 
 ;; selecting best performing
 (expect (mk-arm :arm1 :ucb-value 1)
-        (best-performing :ucb-value [(mk-arm :arm1 :ucb-value 1) (mk-arm :arm2 :ucb-value 0)]))
+        (exploit :ucb-value [(mk-arm :arm1 :ucb-value 1) (mk-arm :arm2 :ucb-value 0)]))
 
 ;; ucb bonus values
 (expect 1.2389740629499462 (bonus-value 10 3))

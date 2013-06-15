@@ -21,7 +21,7 @@
   [arms]
   (filter #(zero? (:pulls %)) arms))
 
-(defn best-performing
+(defn exploit
   "identifies the arm with the highest value for (k arm)"
   [k arms]
   (apply max-key k arms))

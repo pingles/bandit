@@ -1,7 +1,7 @@
 (ns ^{:doc "Upper Confidence Bound algorithm"
       :author "Paul Ingles"}
   clj-bandit.algo.ucb
-  (:use [clj-bandit.arms :only (best-performing unpulled total-pulls)]
+  (:use [clj-bandit.arms :only (exploit unpulled total-pulls)]
         [clojure.math.numeric-tower :only (sqrt)]))
 
 (defn bonus-value
@@ -18,4 +18,4 @@
 (defn select-arm
   [arms]
   (or (first (unpulled arms))
-      (best-performing :ucb-value (map #(ucb-value % arms) arms))))
+      (exploit :ucb-value (map #(ucb-value % arms) arms))))

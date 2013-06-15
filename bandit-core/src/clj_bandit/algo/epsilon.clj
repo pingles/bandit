@@ -1,14 +1,14 @@
 (ns ^{:doc "Epsilon-Greedy algorithm"
       :author "Paul Ingles"}
   clj-bandit.algo.epsilon
-  (:use [clj-bandit.arms :only (best-performing total-pulls)]))
+  (:use [clj-bandit.arms :only (exploit total-pulls)]))
 
 (defn- draw-arm
   ([epsilon arms]
      (draw-arm epsilon (rand) arms))
   ([epsilon n arms]
      (if (> n epsilon)
-       (best-performing :value arms)
+       (exploit :value arms)
        (rand-nth (seq arms)))))
 
 (defmulti select-arm
