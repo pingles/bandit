@@ -65,12 +65,10 @@
                            :cumulative-reward 0}})))
 
 (defn simulations
-  "Produces a sequence of n simulations."
-  [n]
+  "Returns a sequence of n simulations using the provided algorithm's select function."
+  [n algorithm]
   (let [bandit (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
-        arms (mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)
-        epsilon 0.1
-        algorithm (partial eps/select-arm epsilon)]
+        arms (mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)]
     (letfn [(simulationfn []
               (->> arms
                    (simulation-seq bandit algorithm) 
@@ -96,5 +94,6 @@
       (with-open [out-csv (writer output)]
         (write-csv out-csv (mapcat (comp (partial map csv-row)
                                          (partial take (Integer/valueOf time)))
-                                   (simulations (Integer/valueOf num-simulations)))))
+                                   (simulations (Integer/valueOf num-simulations)
+                                                (partial eps/select-arm 0.1)))))
       (println "Completed simulations. Results in" output))))

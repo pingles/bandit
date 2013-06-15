@@ -5,16 +5,13 @@
 (defrecord Arm [name pulls value])
 
 (defn mk-arm
-  ([name]
-     (Arm. name 0 0))
-  ([name & keyvals]
-     (apply assoc (mk-arm name) keyvals)))
+  ([name] (Arm. name 0 0))
+  ([name & keyvals] (apply assoc (mk-arm name) keyvals)))
 
 (defn mk-arms
   "Creates a sorted map to hold onto the state of arms"
   [& names]
-  (apply sorted-map (interleave names
-                                (map mk-arm names))))
+  (apply sorted-map (interleave names (map mk-arm names))))
 
 (defn total-pulls
   [arms]
