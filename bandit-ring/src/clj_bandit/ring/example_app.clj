@@ -34,6 +34,8 @@
 ;; TODO
 ;; (reward currently increases pulls _and_ reward
 ;; separate so we're not double counting views
+;; track individual clicks too in our own bandit Ref
+;; to make it easier to see how it's performing
 (defn record-click
   [arm-state arm-name]
   (update-in arm-state [arm-name] reward 1))
@@ -47,35 +49,33 @@
      (alter bandit record-pull pulled)
      (advertisement pulled))))
 
+(defn bandit-perf
+  []
+  [:div#arms
+   [:h2 "Bandit Numbers"]
+   [:table
+    [:thead
+     [:tr
+      [:th "Arm"]
+      [:th "Pulls"]
+      [:th "Current Value"]]]
+    [:tbody
+     (for [{:keys [name pulls value]} (vals @bandit)]
+       [:tr
+        [:td name]
+        [:td pulls]
+        [:td value]])]]])
+
 (defn layout
-  [& forms]
+  [& body]
   (html5
    [:head [:title "clj-bandit sample"]]
    [:body
     [:h1 "Bandit Testing"]
-    [:ul#nav
-     [:li [:a {:href "/"} "Home"]]     
-     [:li [:a {:href "/stats"} "Bandit Performance"]]]
-    forms]))
+    body
+    (bandit-perf)]))
 
 (defroutes main-routes
-  (GET "/stats" []
-       (layout
-        [:div#main
-         [:h2 "Current state"]]
-        [:div#arms
-         [:table
-          [:thead
-           [:tr
-            [:th "Arm"]
-            [:th "Pulls"]
-            [:th "Current Value"]]]
-          [:tbody
-           (for [{:keys [name pulls value]} (vals @bandit)]
-             [:tr
-              [:td name]
-              [:td pulls]
-              [:td value]])]]]))
   (GET "/" []
        (layout
         [:div#main
