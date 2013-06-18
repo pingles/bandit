@@ -9,6 +9,8 @@
                  [org.clojure/tools.cli "0.2.2"]
                  [org.clojure/data.csv "0.1.2"]
                  [incanter/incanter-core "1.5.1"]]
-  :profiles {:dev {:dependencies [[criterium "0.4.1"]]}}
+  :profiles {:dev {:dependencies [[criterium "0.4.1"]
+                                  [expectations "1.4.48"]]
+                   :plugins [[lein-expectations "0.0.8"]]}}
   :main clj-bandit.simulate
   :jvm-opts ["-Xmx2G" "-server" "-XX:+UseConcMarkSweepGC"])
