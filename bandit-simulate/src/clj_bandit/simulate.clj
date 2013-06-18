@@ -68,9 +68,13 @@
 (defn- summary-row
   "Results is the set of results at time t across all simulations."
   [results]
-  (let [t (:t (first iteration-results))]
-    [t (float (mean (map :cumulative-reward iteration-results)))]))
+  (let [t (:t (first results))]
+    [t (float (mean (map :cumulative-reward results)))]))
 
+(defn transpose
+  [coll]
+  (partition (count coll)
+             (apply interleave coll)))
 
 (defn -main
   [& args]
@@ -93,8 +97,7 @@
       (with-open [out-csv (writer output)]
         (write-csv out-csv
                    (->> (repeatedly n-sims (fn [] (map :result (simulation-seq bandit algo arms))))
-                        (apply interleave)
-                        (partition n-sims)
+                        (transpose)
                         (map summary-row)
                         (take horizon))))
       (println "Completed simulations. Results in" output))))
