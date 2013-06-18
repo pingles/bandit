@@ -6,7 +6,8 @@
         [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
         [clj-bandit.arms :only (mk-arms update reward)]
-        [clojure.tools.cli :only (cli)])
+        [clojure.tools.cli :only (cli)]
+        [incanter.stats :only (mean)])
   (:require [clj-bandit.algo.epsilon :as eps])
   (:gen-class))
 
@@ -64,36 +65,36 @@
                   :result {:t 0
                            :cumulative-reward 0}})))
 
-(defn simulations
-  "Returns a sequence of n simulations using the provided algorithm's select function."
-  [n algorithm]
-  (let [bandit (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
-        arms (mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)]
-    (letfn [(simulationfn []
-              (->> arms
-                   (simulation-seq bandit algorithm) 
-                   (map :result)))]
-      (repeatedly n simulationfn))))
+(defn- summary-row
+  "Results is the set of results at time t across all simulations."
+  [results]
+  (let [t (:t (first iteration-results))]
+    [t (float (mean (map :cumulative-reward iteration-results)))]))
 
-(defn- csv-row
-  [{:keys [t pulled reward cumulative-reward]}]
-  [t pulled reward cumulative-reward])
 
 (defn -main
   [& args]
   (let [[options args banner] (cli args
-                                   ["-o" "--output" "File path to write CSV results data to" :default "results.csv"]
-                                   ["-n" "--num-simulations" "Number of monte-carlo simulations to execute" :default 10]
-                                   ["-t" "--time" "Time horizon to run test to" :default 1000]
+                                   ["-o" "--output" "File path to write results to" :default "results.csv"]
+                                   ["-n" "--num-simulations" "Number of simulations to execute" :default 10]
+                                   ["-t" "--time" "Time: number of iterations within simulation" :default 1000]
                                    ["-h" "--help" "Display this"])]
     (when (:help options)
       (println banner)
       (System/exit 0))
-    (let [{:keys [output num-simulations time]} options]
+    (let [{:keys [output num-simulations time]} options
+          n-sims  (Integer/valueOf num-simulations)
+          horizon (Integer/valueOf time)
+          bandit  (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
+          epsilon 0.1
+          algo    (partial eps/select-arm epsilon)
+          arms    (mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)]
       (println "Starting simulations ...")
       (with-open [out-csv (writer output)]
-        (write-csv out-csv (mapcat (comp (partial map csv-row)
-                                         (partial take (Integer/valueOf time)))
-                                   (simulations (Integer/valueOf num-simulations)
-                                                (partial eps/select-arm 0.1)))))
+        (write-csv out-csv
+                   (->> (repeatedly n-sims (fn [] (map :result (simulation-seq bandit algo arms))))
+                        (apply interleave)
+                        (partition n-sims)
+                        (map summary-row)
+                        (take horizon))))
       (println "Completed simulations. Results in" output))))
