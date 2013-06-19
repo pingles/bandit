@@ -44,8 +44,7 @@ The library is hosted on [Clojars](http://clojars.org) so you can add the follow
 ;; this becomes the next arms state we pass in to e/select-arm
 ;; we can use 1.0 to indicate we were paid, and 0 to indicate
 ;; we weren't
-(a/fold-arm (a/reward arm 1.0) arms)
-
+(a/update (-> arm (a/reward 1.0) (a/pulled)) arms)
 ```
 
 ## Algorithms
