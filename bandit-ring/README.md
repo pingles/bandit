@@ -10,6 +10,10 @@ Start the application
 
 Then open your browser and visit [http://localhost:8080](http://localhost:8080).
 
+## To Do
+
+`bandit-core` algorithms and `bandit-simulate` monte-carlo simulations assume immediate reward feedback. Need to modify `bandit-ring` to incorporate changes to handle such delays. See: [Multi-Armed Bandit Problems with Delayed Feedback](http://arxiv.org/pdf/1011.1161.pdf).
+
 ## License
 
 Copyright &copy; 2013 Paul Ingles
