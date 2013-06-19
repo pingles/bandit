@@ -5,7 +5,7 @@
         [ring.middleware stacktrace reload]
         [ring.util.response]
         [ring.adapter.jetty :only (run-jetty)]
-        [clj-bandit.arms :only (mk-arms reward)]
+        [clj-bandit.arms :only (mk-arms reward pulled)]
         [clj-bandit.algo.ucb :only (select-arm)]))
 
 (defonce bandit (ref (mk-arms :advert1 :advert2 :advert3)))
@@ -29,13 +29,8 @@
 
 (defn record-pull
   [arm-state {:keys [name] :as arm}]
-  (update-in arm-state [name :pulls] inc))
+  (update-in arm-state [name] pulled))
 
-;; TODO
-;; (reward currently increases pulls _and_ reward
-;; separate so we're not double counting views
-;; track individual clicks too in our own bandit Ref
-;; to make it easier to see how it's performing
 (defn record-click
   [arm-state arm-name]
   (update-in arm-state [arm-name] reward 1))
