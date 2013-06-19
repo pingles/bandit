@@ -33,13 +33,19 @@
      (* (/ 1 pulls)
         reward)))
 
+(defn pulled
+  "Record that we've pulled the arm. Allows the pull and reward
+   to be tracked in separate events.
+   e.g: (-> arm (pulled) (reward 0))"
+  [{:keys [pulls] :as arm}]
+  (assoc arm :pulls (inc pulls)))
+
 (defn reward
   "updates the arm given a reward (numeric value)"
   [{:keys [pulls] :as arm} reward]
-  (let [u (assoc arm :pulls (inc pulls))]
-    (if (zero? pulls)
-      (assoc u :value reward)
-      (assoc u :value (weighted-value arm reward)))))
+  (if (zero? pulls)
+    (assoc arm :value reward)
+    (assoc arm :value (weighted-value arm reward))))
 
 (defn update
   "merges the updated arm back into arms"

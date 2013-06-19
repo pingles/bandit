@@ -9,10 +9,15 @@
                vals [(mk-arm :arm1) (mk-arm :arm2) (mk-arm :arm3)]))
 
 ;; tracking arm reward
-(given (-> (mk-arm :arm1) (reward 0) (reward 1))
-       (expect :name :arm1
-               :value 1
-               :pulls 2))
+;; recording a pull
+(given (-> (mk-arm :arm1) (pulled))
+       (expect :pulls 1))
+
+;; recording the reward
+(given (-> (mk-arm :arm1) (pulled) (reward 1))
+       (expect :pulls 1
+               :value 1))
+
 
 ;; finding unpulled arms
 (expect empty? (unpulled [(mk-arm :arm1 :pulls 1)]))
@@ -32,6 +37,6 @@
 
 ;; folding arm results
 (expect [(mk-arm :arm1 :pulls 1 :value 1) (mk-arm :arm2)]
-        (vals (update (reward (mk-arm :arm1) 1)
+        (vals (update (-> (mk-arm :arm1) (pulled) (reward 1))
                       (mk-arms :arm1 :arm2))))
 
