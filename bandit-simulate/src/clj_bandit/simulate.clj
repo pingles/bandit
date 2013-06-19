@@ -5,7 +5,7 @@
         [clojure.java.io :only (writer)]
         [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
-        [clj-bandit.arms :only (mk-arms update reward)]
+        [clj-bandit.arms :only (mk-arms update reward pulled)]
         [clojure.tools.cli :only (cli)]
         [incanter.stats :only (mean)])
   (:require [clj-bandit.algo.epsilon :as eps])
@@ -46,7 +46,7 @@
         arm (get bandit selected-label)
         rwd (draw-arm arm)
         {:keys [cumulative-reward t]} result]
-    {:arms (update (reward pull rwd) arms)
+    {:arms (update (-> pull (reward rwd) (pulled)) arms)
      :result {:pulled selected-label
               :reward rwd
               :t (inc t)
