@@ -6,6 +6,10 @@
   [name & kvs]
   (apply arms/mk-arm name :weight 1 kvs))
 
+(defn mk-arms
+  [& names]
+  (apply sorted-map (interleave names (map mk-arm names))))
+
 (defn arm-probability
   [gamma total-weight number-of-arms {:keys [weight] :as arm}]
   (+ (* (- 1 gamma)
