@@ -1,13 +1,8 @@
 (ns ^{:doc "Softmax algorithm"
       :author "Paul Ingles"}
   clj-bandit.algo.softmax
-  (:use [clj-bandit.arms :only (unpulled)]))
-
-(defn cumulative-sum
-  [coll]
-  (reduce (fn [v, x] (conj v (+ (last v) x)))
-          [(first coll)]
-          (rest coll)))
+  (:use [clj-bandit.arms :only (unpulled)]
+        [incanter.core :only (cumulative-sum)]))
 
 (defn z
   [temperature values]
