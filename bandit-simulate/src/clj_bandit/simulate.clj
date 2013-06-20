@@ -5,10 +5,10 @@
         [clojure.java.io :only (writer)]
         [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
-        [clj-bandit.arms :only (mk-arms update reward pulled)]
+        [clj-bandit.arms :only (update pulled)]
         [clojure.tools.cli :only (cli)]
         [incanter.stats :only (mean)])
-  (:require [clj-bandit.algo.epsilon :as eps])
+  (:require [clj-bandit.algo.exp3 :as exp3])
   (:gen-class))
 
 (defn bernoulli-arm
@@ -40,13 +40,14 @@
    bandit: the multi-armed machine we're optimising against
    selectfn: the algorithm function to select the arm. (f arms)
    arms: current algorithm state"
-  [bandit selectfn {:keys [arms result]}]
-  (let [pull (selectfn (vals arms))
+  [bandit selectfn rewardfn {:keys [arms result]}]
+  (let [gamma 0.1
+        pull (selectfn (vals arms))
         selected-label (:name pull)
         arm (get bandit selected-label)
         rwd (draw-arm arm)
         {:keys [cumulative-reward t]} result]
-    {:arms (update (-> pull (reward rwd) (pulled)) arms)
+    {:arms (update (-> pull (rewardfn rwd) (pulled)) arms)
      :result {:pulled selected-label
               :reward rwd
               :t (inc t)
@@ -59,8 +60,8 @@
    example: to run the algorithm against the bandit to horizon 20:
 
    (take 20 (simulation-seq bandit (partial eps/select-arm epsilon) arms))"
-  [bandit selectfn arms]
-  (rest (iterate (partial simulate bandit selectfn)
+  [bandit selectfn rewardfn arms]
+  (rest (iterate (partial simulate bandit selectfn rewardfn)
                  {:arms arms
                   :result {:t 0
                            :cumulative-reward 0}})))
@@ -87,16 +88,21 @@
       (println banner)
       (System/exit 0))
     (let [{:keys [output num-simulations time]} options
-          n-sims  (Integer/valueOf num-simulations)
-          horizon (Integer/valueOf time)
-          bandit  (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
-          epsilon 0.1
-          algo    (partial eps/select-arm epsilon)
-          arms    (mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)]
+          n-sims      (Integer/valueOf num-simulations)
+          horizon     (Integer/valueOf time)
+          bandit      (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
+          epsilon     0.3
+          gamma       epsilon
+          arms        (exp3/mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)
+          algo-select (partial exp3/select-arm gamma)
+          algo-reward (partial exp3/reward gamma (count arms))]
       (println "Starting simulations ...")
       (with-open [out-csv (writer output)]
         (write-csv out-csv
-                   (->> (repeatedly n-sims (fn [] (map :result (simulation-seq bandit algo arms))))
+                   (->> (repeatedly n-sims (fn [] (map :result (simulation-seq bandit
+                                                                              algo-select
+                                                                              algo-reward
+                                                                              arms))))
                         (transpose)
                         (map summary-row)
                         (take horizon))))
