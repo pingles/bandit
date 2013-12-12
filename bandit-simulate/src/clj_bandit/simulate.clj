@@ -5,11 +5,13 @@
         [clojure.java.io :only (writer)]
         [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
-        [clj-bandit.arms :only (update pulled)]
+        [clj-bandit.arms :only (update pulled reward)]
         [clojure.tools.cli :only (cli)]
         [incanter.stats :only (mean)])
   (:require [clj-bandit.algo.exp3 :as exp3]
-            [clj-bandit.algo.bayes :as bayes])
+            [clj-bandit.algo.bayes :as bayes]
+            [clj-bandit.algo.ucb :as ucb]
+            [clj-bandit.algo.softmax :as softmax])
   (:gen-class))
 
 (defn bernoulli-arm
@@ -81,6 +83,8 @@
 (defn -main
   [& args]
   (let [[options args banner] (cli args
+                                   ["-a" "--algorithm" "Algorithm to use." :default "bayes"]
+                                   ["-e" "--epsilon" "Value to control algorithm's tendency to explore." :default 0.3]
                                    ["-o" "--output" "File path to write results to" :default "results.csv"]
                                    ["-n" "--num-simulations" "Number of simulations to execute" :default 10]
                                    ["-t" "--time" "Time: number of iterations within simulation" :default 1000]
@@ -88,22 +92,30 @@
     (when (:help options)
       (println banner)
       (System/exit 0))
-    (let [{:keys [output num-simulations time]} options
+    (let [{:keys [output num-simulations time algorithm epsilon]} options
           n-sims      (Integer/valueOf num-simulations)
           horizon     (Integer/valueOf time)
           bandit      (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
-          epsilon     0.3
+          epsilon     (Double/valueOf epsilon)
           gamma       epsilon
           arms        (exp3/mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)
-          algo-select bayes/select-arm
-          algo-reward bayes/reward]
+          algos       {:bayes   {:select bayes/select-arm
+                                 :reward bayes/reward}
+                       :exp3    {:select (partial exp3/select-arm gamma)
+                                 :reward (partial exp3/reward gamma 5)}
+                       :ucb     {:select ucb/select-arm
+                                 :reward reward}
+                       :softmax {:select (partial softmax/select-arm epsilon)
+                                 :reward reward}}
+          algo        (keyword algorithm)]
       (println "Starting simulations ...")
       (with-open [out-csv (writer output)]
         (write-csv out-csv
-                   (->> (repeatedly n-sims (fn [] (map :result (simulation-seq bandit
-                                                                              algo-select
-                                                                              algo-reward
-                                                                              arms))))
+                   (->> (repeatedly n-sims (fn []
+                                             (map :result (simulation-seq bandit
+                                                                          (-> algos algo :select)
+                                                                          (-> algos algo :reward)
+                                                                          arms))))
                         (transpose)
                         (map summary-row)
                         (take horizon))))
