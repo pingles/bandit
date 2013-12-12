@@ -19,3 +19,7 @@
                             dist  (beta-distribution alpha beta)]
                         (assoc arm :theta (draw dist))))]
     (exploit :theta (map assoc-theta arms))))
+
+(defn reward
+  [arm reward]
+  (update-in arm [:value] (partial + reward)))

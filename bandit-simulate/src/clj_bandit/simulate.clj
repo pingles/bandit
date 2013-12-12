@@ -8,7 +8,8 @@
         [clj-bandit.arms :only (update pulled)]
         [clojure.tools.cli :only (cli)]
         [incanter.stats :only (mean)])
-  (:require [clj-bandit.algo.exp3 :as exp3])
+  (:require [clj-bandit.algo.exp3 :as exp3]
+            [clj-bandit.algo.bayes :as bayes])
   (:gen-class))
 
 (defn bernoulli-arm
@@ -94,8 +95,8 @@
           epsilon     0.3
           gamma       epsilon
           arms        (exp3/mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)
-          algo-select (partial exp3/select-arm gamma)
-          algo-reward (partial exp3/reward gamma (count arms))]
+          algo-select bayes/select-arm
+          algo-reward bayes/reward]
       (println "Starting simulations ...")
       (with-open [out-csv (writer output)]
         (write-csv out-csv
