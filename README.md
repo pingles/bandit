@@ -55,6 +55,10 @@ As per the book, the following algorithms have been implemented so far:
 * Softmax
 * UCB
 
+Implemented but not included in the book:
+
+* Bayesian
+
 ## Performance
 
 ["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using functions from `clj-bandit.simulate`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
