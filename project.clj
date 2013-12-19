@@ -3,7 +3,7 @@
   :url "http://github.com/pingles/clj-bandit"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[clj-bandit/bandit-core "0.2.0-SNAPSHOT"]
+  :dependencies [[clj-bandit/bandit-core "0.2.0"]
                  [clj-bandit/bandit-simulate "0.2.0-SNAPSHOT"]
                  [clj-bandit/bandit-ring "0.2.0-SNAPSHOT"]]
   :plugins [[lein-sub "0.2.4"]]

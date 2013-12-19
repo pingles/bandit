@@ -1,9 +1,9 @@
-(defproject clj-bandit/bandit-simulate "0.2.0-SNAPSHOT"
+(defproject clj-bandit/bandit-simulate "0.2.0"
   :description "Multi-armed bandit simulation"
   :url "http://github.com/pingles/clj-bandit"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[clj-bandit/bandit-core "0.2.0-SNAPSHOT"]
+  :dependencies [[clj-bandit/bandit-core "0.2.0"]
                  [org.clojure/clojure "1.5.1"]
                  [org.clojure/math.numeric-tower "0.0.2"]
                  [org.clojure/tools.cli "0.2.2"]
