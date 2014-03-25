@@ -15,8 +15,7 @@
                       [:li
                        [:a {:href "/ads"} "Adverts example"]]
                       [:li
-                       [:a {:href "/rank"} "Ranking items example"]]]]))
-  )
+                       [:a {:href "/rank"} "Ranking items example"]]]])))
 
 (def app (-> (routes main-routes ads/advert-example-routes rank/rank-example-routes)
              (wrap-reload '(bandit.ring app adverts))
