@@ -10,6 +10,6 @@
                  [bandit/bandit-core "0.2.1-SNAPSHOT"]
                  [compojure "1.1.6"]
                  [hiccup "1.0.3"]]
-  :main bandit.ring.example-app
+  :main bandit.ring.app
   :profiles {:dev {:dependencies [[expectations "1.4.45"]]
                    :plugins [[lein-expectations "0.0.8"]]}})
