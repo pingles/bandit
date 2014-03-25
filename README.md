@@ -8,7 +8,7 @@ This library aims to be simple; it concerns itself with multi-armed bandit optim
 
 By keeping it small and simple we hope to make it far easier to integrate than existing tools.
 
-[![Build Status](https://secure.travis-ci.org/pingles/clj-bandit.png)](http://travis-ci.org/pingles/clj-bandit)
+[![Build Status](https://secure.travis-ci.org/pingles/bandit.png)](http://travis-ci.org/pingles/bandit)
 
 ## Dependency
 
