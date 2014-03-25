@@ -1,6 +1,6 @@
 (ns bandit.ring.app
   (:use [compojure.core]
-        [ring.middleware stacktrace reload]
+        [ring.middleware stacktrace reload cookies]
         [ring.util.response]
         [ring.adapter.jetty :only (run-jetty)])
   (:require [bandit.ring.adverts :as ads]
@@ -17,9 +17,20 @@
                       [:li
                        [:a {:href "/rank"} "Ranking items example"]]]])))
 
+(defn wrap-user-cookie
+  [handler]
+  (fn [{:keys [cookies] :as request}]
+    (let [resp (handler request)]
+      (if (get cookies "userid")
+        resp
+        (-> resp
+            (set-cookie "userid" (.toString (java.util.UUID/randomUUID))))))))
+
 (def app (-> (routes main-routes ads/advert-example-routes rank/rank-example-routes)
              (wrap-reload '(bandit.ring app adverts rank))
-             (wrap-stacktrace)))
+             (wrap-stacktrace)
+             (wrap-user-cookie)
+             (wrap-cookies)))
 
 (defn -main
   [port]
