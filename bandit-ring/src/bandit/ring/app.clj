@@ -22,5 +22,5 @@
              (wrap-stacktrace)))
 
 (defn -main
-  [& port]
-  (run-jetty #'app {:port (Integer. (or port 8080))}))
+  [port]
+  (run-jetty #'app {:port (Integer. port)}))
