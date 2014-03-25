@@ -8,4 +8,5 @@
                  [incanter/incanter-core "1.5.1"]]
   :profiles {:dev {:dependencies [[expectations "1.4.45"]]}}
   :plugins [[lein-expectations "0.0.8"]]
+  :min-lein-version "2.0.0"
   :aot [bandit.arms])

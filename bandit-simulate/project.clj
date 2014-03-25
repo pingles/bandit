@@ -13,4 +13,5 @@
                                   [expectations "1.4.48"]]
                    :plugins [[lein-expectations "0.0.8"]]}}
   :main bandit.simulate
+  :min-lein-version "2.0.0"
   :jvm-opts ["-Xmx2G" "-server" "-XX:+UseConcMarkSweepGC"])
