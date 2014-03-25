@@ -15,7 +15,7 @@ By keeping it small and simple we hope to make it far easier to integrate than e
 The library is hosted on [Clojars](http://clojars.org) so you can add the following to your `project.clj`:
 
 ```clojure
-:dependencies [[bandit/bandit-core "0.2.0"]]
+:dependencies [[bandit/bandit-core "0.2.1-SNAPSHOT"]]
 ```
 
 ## Usage
