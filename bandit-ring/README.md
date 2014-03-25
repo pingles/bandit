@@ -1,6 +1,6 @@
 # bandit-ring
 
-A sample Ring application applying Multi-Armed Bandit Testing
+A sample Ring application applying Multi-Armed Bandit Testing. A copy of the app is deployed on Heroku: [http://bandit-example.herokuapp.com/](http://bandit-example.herokuapp.com/) (although state is stored in a Ref so will be wiped when the process is cycled).
 
 ## Usage
 
