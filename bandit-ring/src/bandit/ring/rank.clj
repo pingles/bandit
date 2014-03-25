@@ -46,5 +46,11 @@
    (alter bandit pull-all-arms)
    (hic/html [:ul
               (for [{:keys [name]} (rank (vals @bandit))]
-                [:li name])]
+                [:li
+                 [:a {:href (str "/rank/click/" (clojure.core/name name))} name]])]
              (bandit-state @bandit))))
+
+
+(defn record-click
+  [arm-state arm-name]
+  (update-in arm-state [arm-name] bayes/reward 1))

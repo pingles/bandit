@@ -29,12 +29,14 @@
                [:div#main
                 (ads/advert-html)]))
   (GET "/ads/click/:arm-name" [arm-name]
-       (dosync
-        (alter ads/bandit ads/record-click (keyword arm-name)))
+       (dosync (alter ads/bandit ads/record-click (keyword arm-name)))
        (redirect "/ads"))
   (GET "/rank" []
        (layout "Ranking items"
-               [:div#main (rank/items-html)])))
+               [:div#main (rank/items-html)]))
+  (GET "/rank/click/:arm-name" [arm-name]
+       (dosync (alter rank/bandit rank/record-click (keyword arm-name)))
+       (redirect "/rank")))
 
 (def app (-> main-routes
              (wrap-reload '(bandit.ring app adverts))
