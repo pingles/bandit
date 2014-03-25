@@ -1,2 +1,2 @@
-web: $JVM_OPTS lein run -m bandit.ring.app $PORT
+web: lein run -m bandit.ring.app $PORT
 
