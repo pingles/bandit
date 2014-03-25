@@ -1,7 +1,7 @@
-(ns clj-bandit.algo.softmax_test
+(ns bandit.algo.softmax_test
   (use [expectations]
-       [clj-bandit.arms :only (mk-arm)]
-       [clj-bandit.algo.softmax]))
+       [bandit.arms :only (mk-arm)]
+       [bandit.algo.softmax]))
 
 ;; z-values
 (expect 1.0687444933941748E13 (z 1/10 [2 2 3 1]))

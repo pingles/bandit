@@ -1,4 +1,4 @@
-# clj-bandit
+# bandit
 
 A simple Clojure library for multi-armed bandit optimisation.
 
@@ -15,18 +15,18 @@ By keeping it small and simple we hope to make it far easier to integrate than e
 The library is hosted on [Clojars](http://clojars.org) so you can add the following to your `project.clj`:
 
 ```clojure
-:dependencies [[clj-bandit "0.1.0"]]
+:dependencies [[bandit "0.2.0-SNAPSHOT"]]
 ```
 
 ## Usage
 
 ```clojure
 (ns casino.wynn
-  (:require [clj-bandit.arms :as a]
-            [clj-bandit.algo.epsilon :as e]))
+  (:require [bandit.arms :as a]
+            [bandit.algo.epsilon :as e]))
 
 ;; arms represents the knowledge the algorithm acquires. 
-;; a sorted map of clj-bandit.Arm records
+;; a sorted map of bandit.Arm records
 (def arms (a/mk-arms :arm1 :arm2 :arm3 :arm4 :arm5))
 
 (def epsilon 0.1)
@@ -61,7 +61,7 @@ Implemented but not included in the book:
 
 ## Performance
 
-["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using functions from `clj-bandit.simulate`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
+["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using functions from `bandit.simulate`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
 
 In the plots below, `algo.variant` can refer to either a "standard" or "annealing" algorithm (annealing applies a factor that causes the algorithm to explore less as it gains more experience). For "standard" algorithms, `algo.parameter` represents the temperature or epsilon value used to tune the algorithms tendency to explore.
 

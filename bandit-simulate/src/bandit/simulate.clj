@@ -1,17 +1,17 @@
 (ns ^{:doc "Some functions to help test the algorithms using a monte carlo simulation."
       :author "Paul Ingles"}
-  clj-bandit.simulate
+  bandit.simulate
   (:use [clojure.data.csv :only (write-csv)]
         [clojure.java.io :only (writer)]
         [clojure.string :only (join)]
         [clojure.java.io :only (writer)]
-        [clj-bandit.arms :only (update pulled reward)]
+        [bandit.arms :only (update pulled reward)]
         [clojure.tools.cli :only (cli)]
         [incanter.stats :only (mean)])
-  (:require [clj-bandit.algo.exp3 :as exp3]
-            [clj-bandit.algo.bayes :as bayes]
-            [clj-bandit.algo.ucb :as ucb]
-            [clj-bandit.algo.softmax :as softmax])
+  (:require [bandit.algo.exp3 :as exp3]
+            [bandit.algo.bayes :as bayes]
+            [bandit.algo.ucb :as ucb]
+            [bandit.algo.softmax :as softmax])
   (:gen-class))
 
 (defn bernoulli-arm

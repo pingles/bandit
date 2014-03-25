@@ -1,7 +1,7 @@
-(ns clj-bandit.algo.bayes-test
+(ns bandit.algo.bayes-test
   (:use [expectations]
-        [clj-bandit.algo.bayes])
-  (:require [clj-bandit.arms :as arms]))
+        [bandit.algo.bayes])
+  (:require [bandit.arms :as arms]))
 
 (let [a (arms/mk-arm :arm1)]
   (given a

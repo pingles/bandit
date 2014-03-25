@@ -1,7 +1,7 @@
 (ns ^{:doc "Softmax algorithm"
       :author "Paul Ingles"}
-  clj-bandit.algo.softmax
-  (:use [clj-bandit.arms :only (unpulled)]
+  bandit.algo.softmax
+  (:use [bandit.arms :only (unpulled)]
         [incanter.core :only (cumulative-sum)]))
 
 (defn z

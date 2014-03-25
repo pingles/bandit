@@ -1,7 +1,7 @@
 (ns ^{:doc "Bayesian Bandit algorithm"
       :author "Paul Ingles"}
-  clj-bandit.algo.bayes
-  (:use [clj-bandit.arms :only (exploit)]
+  bandit.algo.bayes
+  (:use [bandit.arms :only (exploit)]
         [incanter.distributions :only (beta-distribution draw)]))
 
 ;; Clojure implementation of Bayesian bandit algorithm as

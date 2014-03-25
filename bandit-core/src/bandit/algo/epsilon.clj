@@ -1,7 +1,7 @@
 (ns ^{:doc "Epsilon-Greedy algorithm"
       :author "Paul Ingles"}
-  clj-bandit.algo.epsilon
-  (:use [clj-bandit.arms :only (exploit total-pulls)]))
+  bandit.algo.epsilon
+  (:use [bandit.arms :only (exploit total-pulls)]))
 
 (defn- draw-arm
   ([epsilon arms]

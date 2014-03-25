@@ -1,12 +1,12 @@
-(ns clj-bandit.ring.example-app
+(ns bandit.ring.example-app
   (:use [compojure.core]
         [hiccup.core]
         [hiccup.page]
         [ring.middleware stacktrace reload]
         [ring.util.response]
         [ring.adapter.jetty :only (run-jetty)]
-        [clj-bandit.arms :only (mk-arms reward pulled)]
-        [clj-bandit.algo.ucb :only (select-arm)]))
+        [bandit.arms :only (mk-arms reward pulled)]
+        [bandit.algo.ucb :only (select-arm)]))
 
 (defonce bandit (ref (mk-arms :advert1 :advert2 :advert3)))
 
@@ -64,7 +64,7 @@
 (defn layout
   [& body]
   (html5
-   [:head [:title "clj-bandit sample"]]
+   [:head [:title "bandit sample"]]
    [:body
     [:h1 "Bandit Testing"]
     body
@@ -81,7 +81,7 @@
        (redirect "/")))
 
 (def app (-> main-routes
-             (wrap-reload '(clj-bandit.ring example-app))
+             (wrap-reload '(bandit.ring example-app))
              (wrap-stacktrace)))
 
 (defn -main

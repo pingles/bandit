@@ -1,5 +1,5 @@
-(ns clj-bandit.algo.exp3
-  (:require [clj-bandit.arms :as arms])
+(ns bandit.algo.exp3
+  (:require [bandit.arms :as arms])
   (:use [incanter.core :only (cumulative-sum)]))
 
 (defn mk-arm

@@ -1,7 +1,7 @@
 (ns ^{:doc "Upper Confidence Bound algorithm"
       :author "Paul Ingles"}
-  clj-bandit.algo.ucb
-  (:use [clj-bandit.arms :only (exploit unpulled total-pulls)]
+  bandit.algo.ucb
+  (:use [bandit.arms :only (exploit unpulled total-pulls)]
         [clojure.math.numeric-tower :only (sqrt)]))
 
 (defn bonus-value

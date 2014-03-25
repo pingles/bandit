@@ -1,6 +1,6 @@
 (ns ^{:doc "Arms are used to track the performance of a bandit for the algorithm."
       :author "Paul Ingles"}
-  clj-bandit.arms)
+  bandit.arms)
 
 (defrecord Arm [name pulls value])
 

@@ -1,6 +1,6 @@
-(ns clj-bandit.algo.exp3-test
+(ns bandit.algo.exp3-test
   (:use [expectations]
-        [clj-bandit.algo.exp3]))
+        [bandit.algo.exp3]))
 
 (expect 1 (:weight (mk-arm :arm1)))
 (expect 2 (total-weight [(mk-arm :arm1) (mk-arm :arm2)]))

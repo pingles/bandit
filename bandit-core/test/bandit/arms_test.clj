@@ -1,6 +1,6 @@
-(ns clj-bandit.arms-test
+(ns bandit.arms-test
   (:use [expectations]
-        [clj-bandit.arms]))
+        [bandit.arms]))
 
 ;; making arms
 (given (mk-arms :arm1 :arm2 :arm3)

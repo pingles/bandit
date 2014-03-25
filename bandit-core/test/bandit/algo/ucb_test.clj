@@ -1,7 +1,7 @@
-(ns clj-bandit.algo.ucb_test
+(ns bandit.algo.ucb_test
   (:use [expectations]
-        [clj-bandit.arms :only (mk-arm exploit unpulled)]
-        [clj-bandit.algo.ucb]))
+        [bandit.arms :only (mk-arm exploit unpulled)]
+        [bandit.algo.ucb]))
 
 ;; picking unpulled arms
 (expect 2 (count (unpulled [(mk-arm :arm1) (mk-arm :arm2)])))
