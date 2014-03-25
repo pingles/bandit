@@ -5,11 +5,11 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [ring/ring-core "1.2.2"]
-                 [bandit/bandit-core "0.2.1-SNAPSHOT"]]
+                 [ring/ring-jetty-adapter "1.2.2"]
+                 [ring/ring-devel "1.2.2"]
+                 [bandit/bandit-core "0.2.1-SNAPSHOT"]
+                 [compojure "1.1.6"]
+                 [hiccup "1.0.3"]]
   :main bandit.ring.example-app
-  :profiles {:dev {:dependencies [[ring/ring-devel "1.2.2"]
-                                  [ring/ring-jetty-adapter "1.2.2"]
-                                  [hiccup "1.0.3"]
-                                  [expectations "1.4.45"]
-                                  [compojure "1.1.6"]]
+  :profiles {:dev {:dependencies [[expectations "1.4.45"]]
                    :plugins [[lein-expectations "0.0.8"]]}})
