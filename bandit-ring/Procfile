@@ -1,2 +1,2 @@
-web: java $JVM_OPTS -cp target/bandit-ring-0.2.1-SNAPSHOT-standalone.jar clojure.main -m bandit.ring.app $PORT
+web: $JVM_OPTS lein run -m bandit.ring.app $PORT
 
