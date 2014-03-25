@@ -1,7 +1,10 @@
 (ns ^{:doc "Advertisement optimisation example"}
   bandit.ring.adverts
+  (:use [compojure.core]
+        [ring.util.response :only (redirect)])
   (:require [bandit.arms :as arms]
             [bandit.algo.ucb :as ucb]
+            [bandit.ring.page :as page]
             [hiccup.core :as hic]))
 
 (defonce bandit (ref (arms/mk-arms :advert1 :advert2 :advert3)))
@@ -31,23 +34,6 @@
   [arm-state arm-name]
   (update-in arm-state [arm-name] arms/reward 1))
 
-(defn bandit-state
-  [bandit]
-  [:div#arms
-   [:h2 "Bandit State"]
-   [:table
-    [:thead
-     [:tr
-      [:th "Arm"]
-      [:th "Pulls"]
-      [:th "Current Value"]]]
-    [:tbody
-     (for [{:keys [name pulls value]} (vals bandit)]
-       [:tr
-        [:td name]
-        [:td pulls]
-        [:td value]])]]])
-
 (defn advert-html
   "Uses the bandit algorithm to optimise which advert to show
    and returns it's HTML."
@@ -56,4 +42,14 @@
    (let [pulled (ucb/select-arm (vals @bandit))]
      (alter bandit record-pull pulled)
      (hic/html (advertisement pulled)
-               (bandit-state @bandit)))))
+               (page/bandit-state @bandit)))))
+
+
+(defroutes advert-example-routes
+  (GET "/ads" []
+       (page/layout "Advertisement Click-through"
+               [:div#main
+                (advert-html)]))
+  (GET "/ads/click/:arm-name" [arm-name]
+       (dosync (alter bandit record-click (keyword arm-name)))
+       (redirect "/ads")))

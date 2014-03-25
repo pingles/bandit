@@ -1,7 +1,10 @@
 (ns ^{:doc "Rank items using a bandit. This could be news articles, search result items, products etc."}
   bandit.ring.rank
+  (:use [ring.util.response :only (redirect)]
+        [compojure.core])
   (:require [bandit.arms :as arms]
             [bandit.algo.bayes :as bayes]
+            [bandit.ring.page :as page]
             [hiccup.core :as hic]))
 
 (defonce bandit (ref (arms/mk-arms :item1 :item2 :item3 :item4 :item5)))
@@ -13,24 +16,6 @@
   (reverse (sort-by :theta
                     (map bayes/estimate-value
                          arms))))
-
-(defn bandit-state
-  [bandit]
-  [:div#arms
-   [:h2 "Bandit State"]
-   [:table
-    [:thead
-     [:tr
-      [:th "Arm"]
-      [:th "Pulls"]
-      [:th "Current Value"]]]
-    [:tbody
-     (for [{:keys [name pulls value]} (vals bandit)]
-       [:tr
-        [:td name]
-        [:td pulls]
-        [:td value]])]]])
-
 
 (defn map-vals [m f]
   (into {} (for [[k v] m] [k (f v)])))
@@ -48,9 +33,18 @@
               (for [{:keys [name]} (rank (vals @bandit))]
                 [:li
                  [:a {:href (str "/rank/click/" (clojure.core/name name))} name]])]
-             (bandit-state @bandit))))
+             (page/bandit-state @bandit))))
 
 
 (defn record-click
   [arm-state arm-name]
   (update-in arm-state [arm-name] bayes/reward 1))
+
+
+(defroutes rank-example-routes
+  (GET "/rank" []
+       (page/layout "Ranking items"
+                    [:div#main (items-html)]))
+  (GET "/rank/click/:arm-name" [arm-name]
+       (dosync (alter bandit record-click (keyword arm-name)))
+       (redirect "/rank")))
