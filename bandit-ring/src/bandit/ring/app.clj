@@ -18,7 +18,7 @@
                        [:a {:href "/rank"} "Ranking items example"]]]])))
 
 (def app (-> (routes main-routes ads/advert-example-routes rank/rank-example-routes)
-             (wrap-reload '(bandit.ring app adverts))
+             (wrap-reload '(bandit.ring app adverts rank))
              (wrap-stacktrace)))
 
 (defn -main
