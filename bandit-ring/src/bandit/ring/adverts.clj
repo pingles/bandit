@@ -31,7 +31,7 @@
   [arm-state arm-name]
   (update-in arm-state [arm-name] arms/reward 1))
 
-(defn bandit-perf
+(defn bandit-state
   [bandit]
   [:div#arms
    [:h2 "Bandit State"]
@@ -56,4 +56,4 @@
    (let [pulled (ucb/select-arm (vals @bandit))]
      (alter bandit record-pull pulled)
      (hic/html (advertisement pulled)
-               (bandit-perf @bandit)))))
+               (bandit-state @bandit)))))
