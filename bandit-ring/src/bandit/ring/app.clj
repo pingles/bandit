@@ -7,31 +7,31 @@
             [hiccup.page :as page]))
 
 (defn layout
-  [& body]
+  [title & body]
   (page/html5
-   [:head [:title "bandit sample"]]
+   [:head [:title title]]
    [:body
-    [:h1 "Bandit Examples"]
+    [:h1 title]
     body]))
 
 (defroutes main-routes
   (GET "/" []
-       (layout
-        [:div#main
-         [:ul
-          [:li
-           [:a {:href "/ads"} "Adverts example"]]]]))
+       (layout "Bandit Examples"
+               [:div#main
+                [:ul
+                 [:li
+                  [:a {:href "/ads"} "Adverts example"]]]]))
   (GET "/ads" []
-       (layout
-        [:div#main
-         (ads/advert-html)]))
+       (layout "Advertisement Click-through"
+               [:div#main
+                (ads/advert-html)]))
   (GET "/ads/click/:arm-name" [arm-name]
        (dosync
         (alter ads/bandit ads/record-click (keyword arm-name)))
        (redirect "/ads")))
 
 (def app (-> main-routes
-             (wrap-reload '(bandit.ring example-app))
+             (wrap-reload '(bandit.ring app adverts))
              (wrap-stacktrace)))
 
 (defn -main
