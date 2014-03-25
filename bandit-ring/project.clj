@@ -12,5 +12,6 @@
                  [hiccup "1.0.3"]]
   :min-lein-version "2.0.0"
   :main bandit.ring.app
+  :uberjar-name "bandit-ring-standalone.jar"
   :profiles {:dev {:dependencies [[expectations "1.4.45"]]
                    :plugins [[lein-expectations "0.0.8"]]}})
