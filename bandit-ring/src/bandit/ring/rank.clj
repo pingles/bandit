@@ -21,11 +21,15 @@
   []
   (dosync
    (alter bandit pull-all-arms)
-   (hic/html [:ul
-              (for [{:keys [name]} (arms/rank :theta (map bayes/estimate-value (vals @bandit)))]
-                [:li
-                 [:a {:href (str "/rank/click/" (clojure.core/name name))} name]])]
-             (page/bandit-state @bandit))))
+   (hic/html
+    [:div#explanation
+     [:p "In this example we use the bandit to optimise the rank of items in a list; items with more clicks will rank higher in the list. As with the advertisement example, each item is represented as an arm on the bandit. However, rather than showing just the highest-performing arm we estimate the value of all arms and rank items according to their value."]]
+    [:div#items
+     [:ul
+      (for [{:keys [name]} (arms/rank :theta (map bayes/estimate-value (vals @bandit)))]
+        [:li
+         [:a {:href (str "/rank/click/" (clojure.core/name name))} name]])]]
+    (page/bandit-state @bandit))))
 
 (defn record-click
   [arm-state arm-name]

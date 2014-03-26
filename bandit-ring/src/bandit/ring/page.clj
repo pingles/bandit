@@ -5,7 +5,9 @@
 (defn layout
   [title & body]
   (page/html5
-   [:head [:title title]]
+   [:head
+    [:title title]
+    (page/include-css "/css/app.css")]
    [:body
     [:h1 title]
     body]))

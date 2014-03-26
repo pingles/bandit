@@ -48,8 +48,10 @@
 (defroutes advert-example-routes
   (GET "/ads" []
        (page/layout "Advertisement Click-through"
-               [:div#main
-                (advert-html)]))
+                    [:div#explanation
+                     [:p "This example demonstrates using a Bayesian algorithm to optimise advert click-throughs. There are 3 different adverts (with 3 different calls-to-action). The problem is modeled by using each arm to represent each advert. As you click on adverts the algorithm will tend towards picking that advert."]]
+                    [:div#main
+                     (advert-html)]))
   (GET "/ads/click/:arm-name" [arm-name]
        (dosync (alter bandit record-click (keyword arm-name)))
        (redirect "/ads")))

@@ -2,7 +2,8 @@
   (:use [compojure.core]
         [ring.middleware stacktrace reload cookies]
         [ring.util.response]
-        [ring.adapter.jetty :only (run-jetty)])
+        [ring.adapter.jetty :only (run-jetty)]
+        [ring.middleware.resource :only (wrap-resource)])
   (:require [bandit.ring.adverts :as ads]
             [bandit.ring.rank :as rank]
             [bandit.ring.page :as page]))
@@ -29,6 +30,7 @@
 (def app (-> (routes main-routes ads/advert-example-routes rank/rank-example-routes)
              (wrap-reload '(bandit.ring app adverts rank))
              (wrap-stacktrace)
+             (wrap-resource "public")
              (wrap-user-cookie)
              (wrap-cookies)))
 
