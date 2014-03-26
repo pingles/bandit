@@ -9,14 +9,6 @@
 
 (defonce bandit (ref (arms/mk-arms :item1 :item2 :item3 :item4 :item5)))
 
-(defn rank
-  "Rather than exploiting the maximum theta value item, instead we estimate
-   the value of all arms and sort in descending order of value."
-  [arms]
-  (reverse (sort-by :theta
-                    (map bayes/estimate-value
-                         arms))))
-
 (defn map-vals [m f]
   (into {} (for [[k v] m] [k (f v)])))
 
@@ -30,11 +22,10 @@
   (dosync
    (alter bandit pull-all-arms)
    (hic/html [:ul
-              (for [{:keys [name]} (rank (vals @bandit))]
+              (for [{:keys [name]} (arms/rank :theta (map bayes/estimate-value (vals @bandit)))]
                 [:li
                  [:a {:href (str "/rank/click/" (clojure.core/name name))} name]])]
              (page/bandit-state @bandit))))
-
 
 (defn record-click
   [arm-state arm-name]

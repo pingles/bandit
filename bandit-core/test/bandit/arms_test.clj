@@ -8,6 +8,14 @@
                :arm1 (mk-arm :arm1 :pulls 0 :value 0)
                vals [(mk-arm :arm1) (mk-arm :arm2) (mk-arm :arm3)]))
 
+(let [arms (mk-arms :arm1 :arm2)]
+  (given (rank :value (vals (bandit.arms/update (-> (first (vals arms))
+                                                    (pulled)
+                                                    (reward 1))
+                                                arms)))
+         (expect first (->Arm :arm1 1 1))
+         (expect second (mk-arm :arm2))))
+
 ;; tracking arm reward
 ;; recording a pull
 (given (-> (mk-arm :arm1) (pulled))
@@ -39,4 +47,3 @@
 (expect [(mk-arm :arm1 :pulls 1 :value 1) (mk-arm :arm2)]
         (vals (update (-> (mk-arm :arm1) (pulled) (reward 1))
                       (mk-arms :arm1 :arm2))))
-

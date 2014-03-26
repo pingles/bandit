@@ -21,10 +21,15 @@
   [arms]
   (filter #(zero? (:pulls %)) arms))
 
+(defn rank
+  "Sort arms by largest (k arm) value."
+  [k arms]
+  (reverse (sort-by k arms)))
+
 (defn exploit
   "identifies the arm with the highest value for (k arm)"
   [k arms]
-  (apply max-key k arms))
+  (first (rank k arms)))
 
 (defn weighted-value
   [{:keys [pulls value] :as arm} reward]
