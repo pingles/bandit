@@ -59,6 +59,12 @@ Implemented but not included in the book:
 
 * Bayesian
 
+## Next up...
+
+### Contextual Bandits
+
+Contextual bandits use feature vectors for both the arm and player to provide context for their performance. For more info see [http://hunch.net/?p=298](http://hunch.net/?p=298) and [http://www.researchgate.net/publication/235683567_A_Contextual_Bandit_Algorithm_for_Mobile_Context-Aware_Recommender_System/file/79e41513cc887dd2c9.pdf](http://www.researchgate.net/publication/235683567_A_Contextual_Bandit_Algorithm_for_Mobile_Context-Aware_Recommender_System/file/79e41513cc887dd2c9.pdf).
+
 ## Performance
 
 ["Bandit Algorithms for Website Optimization"](http://shop.oreilly.com/product/0636920027393.do) uses Monte Carlo Simulation to measure the performance of the algorithms. These can be run using functions from `bandit.simulate`, and `./scripts/plot_results.r` will produce the following plots with ggplot2.
