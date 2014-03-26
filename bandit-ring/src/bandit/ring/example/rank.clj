@@ -1,5 +1,5 @@
 (ns ^{:doc "Rank items using a bandit. This could be news articles, search result items, products etc."}
-  bandit.ring.rank
+  bandit.ring.example.rank
   (:use [ring.util.response :only (redirect)]
         [compojure.core])
   (:require [bandit.arms :as arms]

@@ -4,8 +4,8 @@
         [ring.util.response]
         [ring.adapter.jetty :only (run-jetty)]
         [ring.middleware.resource :only (wrap-resource)])
-  (:require [bandit.ring.adverts :as ads]
-            [bandit.ring.rank :as rank]
+  (:require [bandit.ring.example.adverts :as ads]
+            [bandit.ring.example.rank :as rank]
             [bandit.ring.page :as page]))
 
 (defroutes main-routes

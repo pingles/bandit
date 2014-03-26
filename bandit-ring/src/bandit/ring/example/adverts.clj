@@ -1,5 +1,5 @@
 (ns ^{:doc "Advertisement optimisation example"}
-  bandit.ring.adverts
+  bandit.ring.example.adverts
   (:use [compojure.core]
         [ring.util.response :only (redirect)])
   (:require [bandit.arms :as arms]
