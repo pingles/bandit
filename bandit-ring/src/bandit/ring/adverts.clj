@@ -3,7 +3,7 @@
   (:use [compojure.core]
         [ring.util.response :only (redirect)])
   (:require [bandit.arms :as arms]
-            [bandit.algo.ucb :as ucb]
+            [bandit.algo.bayes :as bayes]
             [bandit.ring.page :as page]
             [hiccup.core :as hic]))
 
@@ -32,14 +32,14 @@
 
 (defn record-click
   [arm-state arm-name]
-  (update-in arm-state [arm-name] arms/reward 1))
+  (update-in arm-state [arm-name] bayes/reward 1))
 
 (defn advert-html
   "Uses the bandit algorithm to optimise which advert to show
    and returns it's HTML."
   []
   (dosync
-   (let [pulled (ucb/select-arm (vals @bandit))]
+   (let [pulled (bayes/select-arm (vals @bandit))]
      (alter bandit record-pull pulled)
      (hic/html (advertisement pulled)
                (page/bandit-state @bandit)))))
