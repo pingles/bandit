@@ -63,6 +63,10 @@ body {
     padding: 10px;
 }
 
+p {
+    margin: 0 0 5px 0;
+}
+
 div {
     margin: 0 0 15px 0;
 }

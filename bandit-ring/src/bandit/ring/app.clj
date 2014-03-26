@@ -12,11 +12,15 @@
   (GET "/" []
        (page/layout "Bandit Examples"
                     [:div#main
-                     [:ul
-                      [:li
-                       [:a {:href "/ads"} "Adverts example"]]
-                      [:li
-                       [:a {:href "/rank"} "Ranking items example"]]]])))
+                     [:p "This application shows example applications of Multi-armed Bandit optimisation algorithms. The source code, implemented in Clojure, for the library and this application are available at "
+                      [:a {:href "https://github.com/pingles/bandit"} "https://github.com/pingles/bandit"]]
+                     [:p [:ul
+                          [:li
+                           [:a {:href "/ads"} "Adverts example"]]
+                          [:li
+                           [:a {:href "/rank"} "Ranking items example"]]]]
+                     [:p "Created by Paul Ingles "
+                      [:a {:href "https://twitter.com/pingles"} "@pingles"]]])))
 
 (defn wrap-user-cookie
   [handler]
