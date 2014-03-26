@@ -73,19 +73,19 @@ Results are for a 5-armed machine, rewarding at rates of: 10%, 10%, 10%, 10%, 90
 
 ### Average Reward
 
-![Average Reward](http://clojure.bandit.s3-external-3.amazonaws.com/avg_reward.png)
+![Average Reward](images/avg_reward.png)
 
 ### Accuracy
 
-![Accuracy](http://clojure.bandit.s3-external-3.amazonaws.com/accuracy.png)
+![Accuracy](images/accuracy.png)
 
 ### Cumulative Reward
 
-![Cumulative Reward](http://clojure.bandit.s3-external-3.amazonaws.com/cumulative_reward.png)
+![Cumulative Reward](images/cumulative_reward.png)
 
 The following plot shows the summary for the algorithms when the simulation finished. 1500 simulations were run.
 
-![Boxplot](http://clojure.bandit.s3-external-3.amazonaws.com/algorithm_reward_boxplot.png)
+![Boxplot](images/algorithm_reward_boxplot.png)
 
 ## License
 
