@@ -9,8 +9,15 @@
     [:title title]
     (page/include-css "/css/app.css")]
    [:body
-    [:h1 title]
-    body]))
+    [:div#container
+     [:h1 "Multi-armed Bandits in Clojure"]
+     [:h2 title]
+     body
+     [:div#footer
+      [:p "Example application for the Clojure "
+       [:a {:href "https://github.com/pingles/bandit"} "bandit"]
+       " library, created by Paul Ingles "
+       [:a {:href "http://twitter.com/pingles"} "@pingles"]]]]]))
 
 
 (defn bandit-state

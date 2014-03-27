@@ -80,3 +80,12 @@ td, th {
     border: 1px solid black;
     padding: 5px;
 }
+
+#container {
+    width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#footer {
+    color: #888888;
+}
