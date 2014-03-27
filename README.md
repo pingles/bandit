@@ -63,7 +63,16 @@ Implemented but not included in the book:
 
 ### Contextual Bandits
 
-Contextual bandits use feature vectors for both the arm and player to provide context for their performance. For more info see [http://hunch.net/?p=298](http://hunch.net/?p=298) and [http://www.researchgate.net/publication/235683567_A_Contextual_Bandit_Algorithm_for_Mobile_Context-Aware_Recommender_System/file/79e41513cc887dd2c9.pdf](http://www.researchgate.net/publication/235683567_A_Contextual_Bandit_Algorithm_for_Mobile_Context-Aware_Recommender_System/file/79e41513cc887dd2c9.pdf).
+Contextual bandits use feature vectors for both the arm and player to provide context for their performance.
+
+1. http://hunch.net/?p=298
+2. http://www.researchgate.net/publication/235683567_A_Contextual_Bandit_Algorithm_for_Mobile_Context-Aware_Recommender_System/file/79e41513cc887dd2c9.pdf
+3. http://courses.cs.washington.edu/courses/cse599s/12sp/scribes/lecture13.pdf
+4. http://www.research.rutgers.edu/~lihong/pub/Li10Contextual.pdf
+
+### Incanter Charts
+
+* Update the simulation project to enable real-time graphs to be plotted showing cumulative reward/regret as the simulation executes?
 
 ## Performance
 
