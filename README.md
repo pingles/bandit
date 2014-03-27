@@ -27,14 +27,14 @@ The library is hosted on [Clojars](http://clojars.org) so you can add the follow
 
 ;; arms represents the knowledge the algorithm acquires. 
 ;; a sorted map of bandit.Arm records
-(def arms (a/mk-arms :arm1 :arm2 :arm3 :arm4 :arm5))
+(def bandit (a/bandit :arm1 :arm2 :arm3 :arm4 :arm5))
 
 (def epsilon 0.1)
 
 (def algo-select (partial e/select-arm epsilon))
 
 ;; which arm should we pull?
-(def arm (algo-select (vals arms)))
+(def arm (algo-select (vals bandit)))
 
 ;; it told us to pull :arm5
 ;; casino.wynn> arm
@@ -44,7 +44,7 @@ The library is hosted on [Clojars](http://clojars.org) so you can add the follow
 ;; this becomes the next arms state we pass in to e/select-arm
 ;; we can use 1.0 to indicate we were paid, and 0 to indicate
 ;; we weren't
-(a/update (-> arm (a/reward 1.0) (a/pulled)) arms)
+(a/update (-> arm (a/reward 1.0) (a/pulled)) bandit)
 ```
 
 ## Algorithms
