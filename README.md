@@ -29,6 +29,13 @@ The library is hosted on [Clojars](http://clojars.org) so you can add the follow
 ;; a sorted map of bandit.Arm records
 (def bandit (a/bandit :arm1 :arm2 :arm3 :arm4 :arm5))
 
+;; casino.wynn> (pprint bandit)
+;; {:arm1 {:name :arm1, :pulls 0, :value 0},
+;;  :arm2 {:name :arm2, :pulls 0, :value 0},
+;;  :arm3 {:name :arm3, :pulls 0, :value 0},
+;;  :arm4 {:name :arm4, :pulls 0, :value 0},
+;;  :arm5 {:name :arm5, :pulls 0, :value 0}}
+
 (def epsilon 0.1)
 
 (def algo-select (partial e/select-arm epsilon))
@@ -38,13 +45,20 @@ The library is hosted on [Clojars](http://clojars.org) so you can add the follow
 
 ;; it told us to pull :arm5
 ;; casino.wynn> arm
-;;#clj_bandit.arms.Arm{:name :arm5, :pulls 0, :value 0}
+;; #clj_bandit.arms.Arm{:name :arm5, :pulls 0, :value 0}
 
 ;; let's update the arms to record our payout from :arm5
 ;; this becomes the next arms state we pass in to e/select-arm
 ;; we can use 1.0 to indicate we were paid, and 0 to indicate
 ;; we weren't
-(a/update (-> arm (a/reward 1.0) (a/pulled)) bandit)
+
+(def bandit (a/update (-> arm (a/reward 1) (a/pulled)) bandit))
+;; casino.wynn> (pprint bandit)
+;; {:arm1 {:name :arm1, :pulls 0, :value 0},
+;;  :arm2 {:name :arm2, :pulls 0, :value 0},
+;;  :arm3 {:name :arm3, :pulls 0, :value 0},
+;;  :arm4 {:name :arm4, :pulls 0, :value 0},
+;;  :arm5 {:name :arm5, :pulls 1, :value 1}}
 ```
 
 ## Algorithms
