@@ -98,7 +98,7 @@
           bandit      (mk-bernoulli-bandit :arm1 0.1 :arm2 0.1 :arm3 0.1 :arm4 0.1 :arm5 0.9)
           epsilon     (Double/valueOf epsilon)
           gamma       epsilon
-          arms        (exp3/mk-arms :arm1 :arm2 :arm3 :arm4 :arm5)
+          arms        (exp3/bandit :arm1 :arm2 :arm3 :arm4 :arm5)
           algos       {:bayes   {:select bayes/select-arm
                                  :reward bayes/reward}
                        :exp3    {:select (partial exp3/select-arm gamma)

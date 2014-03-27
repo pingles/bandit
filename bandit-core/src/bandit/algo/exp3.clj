@@ -2,13 +2,13 @@
   (:require [bandit.arms :as arms])
   (:use [incanter.core :only (cumulative-sum)]))
 
-(defn mk-arm
+(defn arm
   [name & kvs]
-  (apply arms/mk-arm name :weight 1 kvs))
+  (apply arms/arm name :weight 1 kvs))
 
-(defn mk-arms
+(defn bandit
   [& names]
-  (apply sorted-map (interleave names (map mk-arm names))))
+  (apply sorted-map (interleave names (map arm names))))
 
 (defn arm-probability
   [gamma total-weight number-of-arms {:keys [weight] :as arm}]

@@ -7,7 +7,7 @@
             [bandit.ring.page :as page]
             [hiccup.core :as hic]))
 
-(defonce bandit (ref (arms/mk-arms :advert1 :advert2 :advert3)))
+(defonce bandit (ref (arms/bandit :advert1 :advert2 :advert3)))
 
 (defmulti advertisement :name)
 (defmethod advertisement :advert1

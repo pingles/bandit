@@ -3,7 +3,7 @@
         [bandit.algo.bayes])
   (:require [bandit.arms :as arms]))
 
-(let [a (arms/mk-arm :arm1)]
+(let [a (arms/arm :arm1)]
   (given a
          (expect :pulls 0
                  :value 0))

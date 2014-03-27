@@ -7,7 +7,7 @@
             [bandit.ring.page :as page]
             [hiccup.core :as hic]))
 
-(defonce bandit (ref (arms/mk-arms :item1 :item2 :item3 :item4 :item5)))
+(defonce bandit (ref (arms/bandit :item1 :item2 :item3 :item4 :item5)))
 
 (defn map-vals [m f]
   (into {} (for [[k v] m] [k (f v)])))
