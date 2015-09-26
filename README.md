@@ -77,12 +77,15 @@ Implemented but not included in the book:
 
 ### Contextual Bandits
 
-Contextual bandits use feature vectors for both the arm and player to provide context for their performance.
+Contextual bandits use feature vectors for both the arm and player to provide context for their performance. There are plenty of references:
 
-1. http://hunch.net/?p=298
-2. http://www.researchgate.net/publication/235683567_A_Contextual_Bandit_Algorithm_for_Mobile_Context-Aware_Recommender_System/file/79e41513cc887dd2c9.pdf
-3. http://courses.cs.washington.edu/courses/cse599s/12sp/scribes/lecture13.pdf
-4. http://www.research.rutgers.edu/~lihong/pub/Li10Contextual.pdf
+1. https://explochallenge.inria.fr/wp-content/uploads/2012/05/paper3.pdf
+2. http://hunch.net/?p=298
+3. http://www.researchgate.net/publication/235683567_A_Contextual_Bandit_Algorithm_for_Mobile_Context-Aware_Recommender_System/file/79e41513cc887dd2c9.pdf
+4. http://courses.cs.washington.edu/courses/cse599s/12sp/scribes/lecture13.pdf
+5. http://www.research.rutgers.edu/~lihong/pub/Li10Contextual.pdf
+
+But 1 looks to be the most accessible, showing a couple of variations for adding context to arms.
 
 ### Incanter Charts
 
