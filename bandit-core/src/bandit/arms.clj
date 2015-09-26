@@ -13,13 +13,17 @@
   [& names]
   (apply sorted-map (interleave names (map arm names))))
 
+(defn pulls
+  [arm]
+  (:pulls arm))
+
 (defn total-pulls
   [arms]
-  (reduce + (map :pulls arms)))
+  (reduce + (map pulls arms)))
 
 (defn unpulled
   [arms]
-  (filter #(zero? (:pulls %)) arms))
+  (filter #(zero? (pulls %)) arms))
 
 (defn rank
   "Sort arms by largest (k arm) value."
