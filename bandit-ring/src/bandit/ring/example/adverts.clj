@@ -8,31 +8,27 @@
             [hiccup.core :as hic]
             [ring.util.anti-forgery :refer [anti-forgery-field]]))
 
-(defonce bandit (ref (arms/bandit :advert1 :advert2 :advert3)))
-(def valid-arms #{:advert1 :advert2 :advert3})
+(def advert-catalog
+  [[:advert1 "Advert 1" "Buy Now"]
+   [:advert2 "Advert 2" "More Info"]
+   [:advert3 "Advert 3" "Apply Now"]])
 
-(defmulti advertisement :name)
-(defmethod advertisement :advert1
-  [_]
-  [:div.advert
-   [:h3 "Advert 1"]
-   [:form {:action "/ads/click/advert1" :method "POST"}
-    (anti-forgery-field)
-    [:button {:type "submit"} "Buy Now"]]])
-(defmethod advertisement :advert2
-  [_]
-  [:div.advert
-   [:h3 "Advert 2"]
-   [:form {:action "/ads/click/advert2" :method "POST"}
-    (anti-forgery-field)
-    [:button {:type "submit"} "More Info"]]])
-(defmethod advertisement :advert3
-  [_]
-  [:div.advert
-   [:h3 "Advert 3"]
-   [:form {:action "/ads/click/advert3" :method "POST"}
-    (anti-forgery-field)
-    [:button {:type "submit"} "Apply Now"]]])
+(def advert-by-name
+  (into {} (for [[arm-name title cta] advert-catalog]
+             [arm-name {:title title :cta cta}])))
+
+(def valid-arms (set (keys advert-by-name)))
+(defonce bandit (ref (apply arms/bandit (map first advert-catalog))))
+
+(defn advertisement
+  [{:keys [name]}]
+  (let [{:keys [title cta]} (get advert-by-name name)
+        arm-name (clojure.core/name name)]
+    [:div.advert
+     [:h3 title]
+     [:form {:action (str "/ads/click/" arm-name) :method "POST"}
+      (anti-forgery-field)
+      [:button {:type "submit"} cta]]]))
 
 (defn record-pull
   [arm-state {:keys [name] :as arm}]
