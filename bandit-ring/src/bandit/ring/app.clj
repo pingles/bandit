@@ -1,6 +1,7 @@
 (ns bandit.ring.app
   (:use [compojure.core]
         [ring.middleware stacktrace reload cookies]
+        [ring.middleware.anti-forgery :only (wrap-anti-forgery)]
         [ring.util.response]
         [ring.adapter.jetty :only (run-jetty)]
         [ring.middleware.resource :only (wrap-resource)])
@@ -27,12 +28,25 @@
       (if (get cookies "userid")
         resp
         (-> resp
-            (set-cookie "userid" (.toString (java.util.UUID/randomUUID))))))))
+            (set-cookie "userid"
+                        (.toString (java.util.UUID/randomUUID))
+                        {:http-only true
+                         :same-site :lax
+                         :secure (= :https (:scheme request))
+                         :path "/"}))))))
+
+(defn wrap-dev-middleware
+  [handler]
+  (if (= "dev" (System/getenv "BANDIT_ENV"))
+    (-> handler
+        (wrap-reload '(bandit.ring app adverts rank))
+        (wrap-stacktrace))
+    handler))
 
 (def app (-> (routes main-routes ads/advert-example-routes rank/rank-example-routes)
-             (wrap-reload '(bandit.ring app adverts rank))
-             (wrap-stacktrace)
+             (wrap-dev-middleware)
              (wrap-resource "public")
+             (wrap-anti-forgery)
              (wrap-user-cookie)
              (wrap-cookies)))
 
