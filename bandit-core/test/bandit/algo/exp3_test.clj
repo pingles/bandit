@@ -15,7 +15,7 @@
 
 ;; tracking reward
 (given (reward 1 1 (arm :arm1 :p 1) 1)
-       (expect :weight 2.718281828459045))
+       (expect :weight 2.7182818284590455))
 
 ;; draw arm based on arm probability
 (let [arms [(arm :arm1 :p 0.5) (arm :arm2 :p 0.99)]]

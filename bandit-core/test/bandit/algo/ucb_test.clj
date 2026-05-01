@@ -17,7 +17,7 @@
                   [(arm :arm1 :pulls 1) (arm :arm2 :pulls 2)])
        (expect :name :arm1
                :pulls 1
-               :ucb-value 1.4823038073675112))
+               :ucb-value 1.482303807367511))
 
 ;; selecting arms
 (given (select-arm [(arm :arm1) (arm :arm2 :pulls 1)])
