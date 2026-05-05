@@ -23,3 +23,9 @@
   (expect (arm :arm1 :p 0.5 :cumulative-p 0.5 :pulls 10) (select-arm 1 0.05 arms))
   (expect (arm :arm2 :p 0.5 :cumulative-p 1.0 :pulls 10) (select-arm 1 0.91 arms))
   (expect (arm :arm2 :cumulative-p 0.9 :pulls 10) (select-arm 1 100 arms)))
+
+;; regression: the 2-arity variant must not infinitely recurse (GH issue #4).
+;; Previously `(select-arm temperature arms)` called `(select-arm (rand) arms)`,
+;; which looped back into itself and blew the stack. It should delegate to the
+;; 3-arity form. With unpulled arms we can assert a deterministic result.
+(expect (arm :arm1) (select-arm 1 [(arm :arm1) (arm :arm2)]))
