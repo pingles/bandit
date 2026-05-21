@@ -23,3 +23,10 @@
   (expect (arm :arm1 :p 0.5 :cumulative-p 0.5 :pulls 10) (select-arm 1 0.05 arms))
   (expect (arm :arm2 :p 0.5 :cumulative-p 1.0 :pulls 10) (select-arm 1 0.91 arms))
   (expect (arm :arm2 :cumulative-p 0.9 :pulls 10) (select-arm 1 100 arms)))
+
+;; regression: 2-arity select-arm must not infinitely recurse (issue #4)
+(expect (arm :arm1) (select-arm 1 [(arm :arm1) (arm :arm2)]))
+(let [arms   [(arm :arm1 :pulls 10 :value 1)
+              (arm :arm2 :pulls 10 :value 1)]
+      chosen (select-arm 0.1 arms)]
+  (expect true (contains? #{:arm1 :arm2} (:name chosen))))

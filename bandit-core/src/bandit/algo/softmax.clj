@@ -30,7 +30,7 @@
   "selects the arm to pull. a higher temperature causes the algorithm to
    favour experimentation. 0 < temperature < 1."
   ([temperature arms]
-     (select-arm (rand) arms))
+     (select-arm temperature (rand) arms))
   ([temperature rand-val arms]
      (or (first (unpulled arms))
          (first (filter (fn [{:keys [cumulative-p]}]
